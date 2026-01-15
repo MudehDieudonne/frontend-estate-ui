@@ -1,39 +1,51 @@
-import { About } from "./components/About";
-import { Cta } from "./components/Cta";
-import { FAQ } from "./components/FAQ";
-import { Features } from "./components/Features";
-import { Footer } from "./components/Footer";
-import { Hero } from "./components/Hero";
-import { HowItWorks } from "./components/HowItWorks";
-import { Navbar } from "./components/Navbar";
-import { Newsletter } from "./components/Newsletter";
-import { Pricing } from "./components/Pricing";
-import { ScrollToTop } from "./components/ScrollToTop";
-import { Services } from "./components/Services";
-import { Sponsors } from "./components/Sponsors";
-import { Team } from "./components/Team";
-import { Testimonials } from "./components/Testimonials";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { LandingPage } from "./pages/LandingPage";
+import { LoginPage } from "./pages/LoginPage";
+import { RegisterPage } from "./pages/RegisterPage";
+import { FeedPage } from "./pages/FeedPage";
+import { PropertyDetailsPage } from "./pages/PropertyDetailsPage";
+import { ProfilePage } from "./pages/ProfilePage";
+import { ChatPage } from "./pages/ChatPage";
+import { useAuth } from "./context/AuthContext";
+import { ProtectedRoute } from "./routes/ProtectedRoute";
 import "./App.css";
 
 function App() {
+  const { user } = useAuth();
+
   return (
-    <>
-      <Navbar />
-      <Hero />
-      <Sponsors />
-      <About />
-      <HowItWorks />
-      <Features />
-      <Services />
-      <Cta />
-      <Testimonials />
-      <Team />
-      <Pricing />
-      <Newsletter />
-      <FAQ />
-      <Footer />
-      <ScrollToTop />
-    </>
+    <Routes>
+      <Route path="/" element={user ? <Navigate to="/feed" /> : <LandingPage />} />
+      <Route path="/login" element={user ? <Navigate to="/feed" /> : <LoginPage />} />
+      <Route path="/register" element={user ? <Navigate to="/feed" /> : <RegisterPage />} />
+
+      <Route path="/feed" element={
+        <ProtectedRoute>
+          <FeedPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/property/:id" element={
+        <ProtectedRoute>
+          <PropertyDetailsPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/profile" element={
+        <ProtectedRoute>
+          <ProfilePage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/chat" element={
+        <ProtectedRoute>
+          <ChatPage />
+        </ProtectedRoute>
+      } />
+
+      {/* Catch-all */}
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   );
 }
 
