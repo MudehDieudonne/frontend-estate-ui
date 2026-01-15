@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 # Dependency directories
-LICENSE
+.LICENSE
