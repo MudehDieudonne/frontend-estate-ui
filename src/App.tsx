@@ -6,6 +6,7 @@ import { FeedPage } from "./pages/FeedPage";
 import { PropertyDetailsPage } from "./pages/PropertyDetailsPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { ChatPage } from "./pages/ChatPage";
+import { CreateListingPage } from "./pages/CreateListingPage";
 import { useAuth } from "./context/AuthContext";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import "./App.css";
@@ -40,6 +41,12 @@ function App() {
       <Route path="/chat" element={
         <ProtectedRoute>
           <ChatPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/create-listing" element={
+        <ProtectedRoute>
+          <CreateListingPage />
         </ProtectedRoute>
       } />
 

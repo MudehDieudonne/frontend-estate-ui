@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import api from "../lib/api";
 import { FeedLayout } from "../components/FeedLayout";
 import { PropertyPost, PropertyPostProps } from "../components/PropertyPost";
@@ -49,8 +50,10 @@ export const FeedPage = () => {
                     <History className="h-4 w-4 text-primary" /> My Listings
                 </Button>
                 <div className="pt-2">
-                    <Button className="w-full gap-2" size="sm">
-                        <PlusCircle className="h-4 w-4" /> Post Property
+                    <Button className="w-full gap-2" size="sm" asChild>
+                        <Link to="/create-listing">
+                            <PlusCircle className="h-4 w-4" /> Post Property
+                        </Link>
                     </Button>
                 </div>
             </CardContent>
