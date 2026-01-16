@@ -12,6 +12,7 @@ import { Textarea } from "../components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Label } from "../components/ui/label";
 import { X, Loader2 } from "lucide-react";
+import { FaHome, FaCamera, FaMapMarkerAlt } from "react-icons/fa";
 
 // Fix Leaflet marker icon issue
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
@@ -119,7 +120,7 @@ export const CreateListingPage = () => {
                     <Card className="border-primary/20">
                         <CardHeader>
                             <h2 className="text-lg font-semibold flex items-center gap-2">
-                                🏠 Basic Information
+                                <FaHome className="text-primary" /> Basic Information
                             </h2>
                         </CardHeader>
                         <CardContent className="space-y-4">
@@ -237,7 +238,7 @@ export const CreateListingPage = () => {
                         <Card className="border-primary/20">
                             <CardHeader>
                                 <h2 className="text-lg font-semibold flex items-center gap-2">
-                                    📸 Property Images (Min 3)
+                                    <FaCamera className="text-primary" /> Property Images (Min 3)
                                 </h2>
                             </CardHeader>
                             <CardContent className="space-y-4">
@@ -279,7 +280,7 @@ export const CreateListingPage = () => {
                         <Card className="border-primary/20 overflow-hidden">
                             <CardHeader className="bg-muted p-4">
                                 <h2 className="text-lg font-semibold flex items-center gap-2">
-                                    📍 Pinpoint Location
+                                    <FaMapMarkerAlt className="text-primary" /> Pinpoint Location
                                 </h2>
                                 <p className="text-xs text-muted-foreground">Click on the map to set the exact property coordinates.</p>
                             </CardHeader>
