@@ -34,19 +34,23 @@ interface RouteProps {
 
 const routeList: RouteProps[] = [
   {
-    href: "#features",
-    label: "Features",
+    href: "/feed",
+    label: "Feed",
   },
   {
-    href: "#testimonials",
-    label: "Testimonials",
+    href: "/hotels",
+    label: "Hotels",
   },
   {
-    href: "#pricing",
-    label: "Pricing",
+    href: "/guest-houses",
+    label: "Guest-Hs",
   },
   {
-    href: "#faq",
+    href: "/services",
+    label: "Services",
+  },
+  {
+    href: "/faq",
     label: "FAQ",
   },
 ];
@@ -92,15 +96,14 @@ export const Navbar = () => {
                 </SheetHeader>
                 <nav className="flex flex-col justify-center items-center gap-2 mt-4">
                   {routeList.map(({ href, label }: RouteProps) => (
-                    <a
-                      rel="noreferrer noopener"
+                    <Link
                       key={label}
-                      href={href}
+                      to={href}
                       onClick={() => setIsOpen(false)}
                       className={buttonVariants({ variant: "ghost" })}
                     >
                       {label}
-                    </a>
+                    </Link>
                   ))}
 
                   {!user ? (
@@ -144,16 +147,15 @@ export const Navbar = () => {
           {/* desktop */}
           <nav className="hidden md:flex gap-2">
             {routeList.map((route: RouteProps, i) => (
-              <a
-                rel="noreferrer noopener"
-                href={route.href}
+              <Link
+                to={route.href}
                 key={i}
                 className={`text-[17px] ${buttonVariants({
                   variant: "ghost",
                 })}`}
               >
                 {route.label}
-              </a>
+              </Link>
             ))}
           </nav>
 

@@ -7,6 +7,8 @@ import { PropertyDetailsPage } from "./pages/PropertyDetailsPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { ChatPage } from "./pages/ChatPage";
 import { CreateListingPage } from "./pages/CreateListingPage";
+import { SettingsPage } from "./pages/SettingsPage";
+import { ComingSoon } from "./pages/ComingSoon";
 import { useAuth } from "./context/AuthContext";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import "./App.css";
@@ -47,6 +49,17 @@ function App() {
       <Route path="/create-listing" element={
         <ProtectedRoute>
           <CreateListingPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/hotels" element={<ComingSoon title="Hotels" />} />
+      <Route path="/guest-houses" element={<ComingSoon title="Guest Houses" />} />
+      <Route path="/services" element={<ComingSoon title="Services" />} />
+      <Route path="/faq" element={<ComingSoon title="FAQ" />} />
+
+      <Route path="/settings" element={
+        <ProtectedRoute>
+          <SettingsPage />
         </ProtectedRoute>
       } />
 

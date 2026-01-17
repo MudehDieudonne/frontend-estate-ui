@@ -21,7 +21,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const [socket, setSocket] = useState<Socket | null>(null);
 
     useEffect(() => {
-        const newSocket = io("http://localhost:4000");
+        const newSocket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:4000");
         setSocket(newSocket);
 
         return () => {

@@ -11,8 +11,9 @@ import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Label } from "../components/ui/label";
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, Upload, Plus } from "lucide-react";
 import { FaHome, FaCamera, FaMapMarkerAlt } from "react-icons/fa";
+import { uploadMultipleImages } from "../lib/cloudinary";
 
 // Fix Leaflet marker icon issue
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
@@ -55,14 +56,34 @@ export const CreateListingPage = () => {
     const [type, setType] = useState<"rent" | "sale">("sale");
     const [property, setProperty] = useState("apartment");
     const [images, setImages] = useState<string[]>([]);
-    const [imageUrl, setImageUrl] = useState("");
     const [position, setPosition] = useState<L.LatLng | null>(new L.LatLng(3.848, 11.5021)); // Default to Yaoundé
+    const [uploading, setUploading] = useState(false);
+    const [inputMode, setInputMode] = useState<"upload" | "url">("upload");
+    const [manualUrl, setManualUrl] = useState("");
 
-    const addImage = () => {
-        if (imageUrl && !images.includes(imageUrl)) {
-            setImages([...images, imageUrl]);
-            setImageUrl("");
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+
+        setUploading(true);
+        setError("");
+        try {
+            const uploadedUrls = await uploadMultipleImages(files);
+            setImages(prev => [...prev, ...uploadedUrls]);
+        } catch (err) {
+            console.error("Upload failed", err);
+            setError("Failed to upload images. Please check your Cloudinary configuration.");
+        } finally {
+            setUploading(false);
         }
+    };
+
+    const addManualUrl = () => {
+        if (!manualUrl) return;
+        if (!images.includes(manualUrl)) {
+            setImages(prev => [...prev, manualUrl]);
+        }
+        setManualUrl("");
     };
 
     const removeImage = (index: number) => {
@@ -242,15 +263,60 @@ export const CreateListingPage = () => {
                                 </h2>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <div className="flex gap-2">
-                                    <Input
-                                        placeholder="Enter image URL..."
-                                        value={imageUrl}
-                                        onChange={(e) => setImageUrl(e.target.value)}
-                                    />
-                                    <Button type="button" onClick={addImage} size="icon" variant="secondary">
-                                        <Plus className="h-4 w-4" />
-                                    </Button>
+                                <div className="space-y-4">
+                                    <div className="flex bg-muted p-1 rounded-md mb-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => setInputMode("upload")}
+                                            className={`flex-1 py-1.5 text-sm font-medium rounded-sm transition-all ${inputMode === "upload" ? "bg-background shadow-sm" : "hover:text-muted-foreground"}`}
+                                        >
+                                            Local Upload
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setInputMode("url")}
+                                            className={`flex-1 py-1.5 text-sm font-medium rounded-sm transition-all ${inputMode === "url" ? "bg-background shadow-sm" : "hover:text-muted-foreground"}`}
+                                        >
+                                            Image URL
+                                        </button>
+                                    </div>
+
+                                    {inputMode === "upload" ? (
+                                        <div className="flex flex-col items-center justify-center border-2 border-dashed border-primary/20 rounded-lg p-6 hover:bg-primary/5 transition-colors cursor-pointer relative">
+                                            <input
+                                                type="file"
+                                                multiple
+                                                accept="image/*"
+                                                onChange={handleImageUpload}
+                                                className="absolute inset-0 opacity-0 cursor-pointer"
+                                                disabled={uploading}
+                                            />
+                                            {uploading ? (
+                                                <div className="flex flex-col items-center gap-2">
+                                                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                                                    <p className="text-sm">Uploading...</p>
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                                                    <Upload className="h-8 w-8" />
+                                                    <p className="text-sm font-medium">Click or drag images to upload</p>
+                                                    <p className="text-xs">Support multiple images</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className="flex gap-2">
+                                            <Input
+                                                placeholder="Paste image URL here..."
+                                                value={manualUrl}
+                                                onChange={(e) => setManualUrl(e.target.value)}
+                                                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addManualUrl())}
+                                            />
+                                            <Button type="button" onClick={addManualUrl} size="icon" variant="secondary">
+                                                <Plus className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    )}
                                 </div>
                                 {images.length > 0 && (
                                     <div className="grid grid-cols-3 gap-2">
@@ -320,21 +386,4 @@ export const CreateListingPage = () => {
     );
 };
 
-// Helper components for icons used in the form
-const Plus = ({ className }: { className?: string }) => (
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className={className}
-    >
-        <path d="M5 12h14" />
-        <path d="M12 5v14" />
-    </svg>
-);
+
