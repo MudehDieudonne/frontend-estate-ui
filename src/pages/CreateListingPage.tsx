@@ -121,7 +121,7 @@ export const CreateListingPage = () => {
                 longitude: position.lng,
             };
 
-            await api.post("/api/posts", payload);
+            await api.post("/posts", payload);
             navigate("/feed");
         } catch (err: unknown) {
             const errorMessage = err instanceof Error ? err.message : "Failed to create listing. Please try again.";

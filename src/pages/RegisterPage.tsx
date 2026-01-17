@@ -19,7 +19,7 @@ export const RegisterPage = () => {
         setLoading(true);
 
         try {
-            await api.post("/api/auth/register", { username, email, password });
+            await api.post("/auth/register", { username, email, password });
             // Redirect to login after successful registration
             navigate("/login", { state: { message: "Account created successfully! Please login." } });
         } catch (err: unknown) {

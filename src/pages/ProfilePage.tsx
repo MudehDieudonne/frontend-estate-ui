@@ -4,22 +4,44 @@ import { Card, CardHeader, CardContent } from "../components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { Settings, LogOut, Loader2, Link as LinkIcon, Upload } from "lucide-react";
-import { useState } from "react";
+import { Settings, LogOut, Loader2, Link as LinkIcon, Upload, Plus } from "lucide-react";
+import { useState, useEffect } from "react";
 import { uploadImage } from "../lib/cloudinary";
 import api from "../lib/api";
 import { Link } from "react-router-dom";
 import { FaHome, FaCamera } from "react-icons/fa";
+import { PropertyPost, PropertyPostProps } from "../components/PropertyPost";
 
 export const ProfilePage = () => {
     const { user, logout, updateUser } = useAuth();
     const [uploading, setUploading] = useState(false);
     const [showUrlInput, setShowUrlInput] = useState(false);
     const [avatarUrl, setAvatarUrl] = useState("");
+    const [userPosts, setUserPosts] = useState<PropertyPostProps[]>([]);
+    const [savedPosts, setSavedPosts] = useState<PropertyPostProps[]>([]);
+    const [loadingPosts, setLoadingPosts] = useState(true);
+
+    useEffect(() => {
+        const fetchProfileData = async () => {
+            try {
+                const res = await api.get("/users/profilePosts");
+                setUserPosts(res.data.userPosts);
+                setSavedPosts(res.data.savedPosts);
+            } catch (err) {
+                console.error("Failed to fetch profile data", err);
+            } finally {
+                setLoadingPosts(false);
+            }
+        };
+
+        if (user) {
+            fetchProfileData();
+        }
+    }, [user]);
 
     const updateAvatar = async (url: string) => {
         try {
-            await api.put("/api/users/" + user?.id, { avatar: url });
+            await api.put("/users/" + user?.id, { avatar: url });
             if (updateUser) {
                 updateUser({ ...user!, avatar: url });
             }
@@ -58,7 +80,7 @@ export const ProfilePage = () => {
                         <div className="relative group">
                             <Avatar className="h-32 w-32 border-4 border-background shadow-xl">
                                 <AvatarImage src={user?.avatar} />
-                                <AvatarFallback className="text-3xl">{user?.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                <AvatarFallback className="text-3xl">{user?.username?.substring(0, 2).toUpperCase() || "??"}</AvatarFallback>
                             </Avatar>
                             <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity overflow-hidden">
                                 <label className="flex-1 h-full flex items-center justify-center hover:bg-white/20 transition-colors cursor-pointer border-r border-white/20" title="Upload Image">
@@ -81,7 +103,6 @@ export const ProfilePage = () => {
                                     placeholder="Paste avatar URL..."
                                     value={avatarUrl}
                                     onChange={(e) => setAvatarUrl(e.target.value)}
-                                    size={1} // custom size or class
                                     className="h-8 text-xs"
                                 />
                                 <Button size="sm" className="h-8" onClick={handleUrlSubmit}>Add</Button>
@@ -107,7 +128,7 @@ export const ProfilePage = () => {
                                 <CardContent className="p-4 flex items-center justify-between">
                                     <div>
                                         <p className="text-sm font-medium">My Listings</p>
-                                        <p className="text-2xl font-bold">0</p>
+                                        <p className="text-2xl font-bold">{userPosts.length}</p>
                                     </div>
                                     <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
                                         <FaHome />
@@ -118,7 +139,7 @@ export const ProfilePage = () => {
                                 <CardContent className="p-4 flex items-center justify-between">
                                     <div>
                                         <p className="text-sm font-medium">Saved Items</p>
-                                        <p className="text-2xl font-bold">0</p>
+                                        <p className="text-2xl font-bold">{savedPosts.length}</p>
                                     </div>
                                     <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
                                         <FaCamera />
@@ -126,11 +147,46 @@ export const ProfilePage = () => {
                                 </CardContent>
                             </Card>
                         </div>
-                        <div className="text-center py-20 text-muted-foreground border-t mt-6">
-                            <p>You haven't posted any properties yet.</p>
-                            <Button asChild className="mt-4">
-                                <Link to="/create-listing">Create your first listing</Link>
-                            </Button>
+
+                        <div className="mt-8 space-y-6">
+                            <div className="flex items-center justify-between border-b pb-2">
+                                <h2 className="text-xl font-bold">My Property Listings</h2>
+                                <Button asChild size="sm" className="gap-2">
+                                    <Link to="/create-listing"><Plus className="h-4 w-4" /> New Post</Link>
+                                </Button>
+                            </div>
+
+                            {loadingPosts ? (
+                                <div className="py-20 flex justify-center">
+                                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                                </div>
+                            ) : userPosts.length > 0 ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {userPosts.map(post => (
+                                        <PropertyPost key={post.id} post={post} />
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-20 text-muted-foreground">
+                                    <p>You haven't posted any properties yet.</p>
+                                    <Button asChild variant="outline" className="mt-4">
+                                        <Link to="/create-listing">Create your first listing</Link>
+                                    </Button>
+                                </div>
+                            )}
+
+                            {savedPosts.length > 0 && (
+                                <div className="mt-12 space-y-6">
+                                    <div className="flex items-center justify-between border-b pb-2">
+                                        <h2 className="text-xl font-bold">Saved Properties</h2>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {savedPosts.map(post => (
+                                            <PropertyPost key={post.id} post={post} />
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </CardContent>
                 </Card>

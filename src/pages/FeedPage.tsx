@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import api from "../lib/api";
 import { FeedLayout } from "../components/FeedLayout";
 import { PropertyPost, PropertyPostProps } from "../components/PropertyPost";
+import { SearchBar } from "../components/SearchBar";
 import { useAuth } from "../context/AuthContext";
 import { Card, CardHeader, CardContent } from "../components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -11,13 +12,22 @@ import { Home, Bookmark, History, PlusCircle, TrendingUp } from "lucide-react";
 
 export const FeedPage = () => {
     const [posts, setPosts] = useState<PropertyPostProps[]>([]);
+    const [searchParams, setSearchParams] = useState({
+        city: "",
+        type: "",
+        minPrice: "",
+        maxPrice: "",
+        bedroom: "",
+    });
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
 
     useEffect(() => {
         const fetchPosts = async () => {
+            setLoading(true);
             try {
-                const response = await api.get("/api/posts");
+                const query = new URLSearchParams(searchParams).toString();
+                const response = await api.get(`/posts?${query}`);
                 setPosts(response.data);
             } catch (err) {
                 console.error("Failed to fetch posts:", err);
@@ -26,7 +36,11 @@ export const FeedPage = () => {
             }
         };
         fetchPosts();
-    }, []);
+    }, [searchParams]);
+
+    const handleSearch = (params: any) => {
+        setSearchParams(params);
+    };
 
     const LeftSidebar = (
         <Card className="border-primary/10 shadow-sm overflow-hidden">
@@ -88,6 +102,9 @@ export const FeedPage = () => {
 
     return (
         <FeedLayout leftSidebar={LeftSidebar} rightSidebar={RightSidebar}>
+            <div className="mb-6">
+                <SearchBar onSearch={handleSearch} />
+            </div>
             {loading ? (
                 <div className="space-y-6">
                     {[1, 2, 3].map((i) => (

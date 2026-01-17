@@ -42,7 +42,7 @@ export const ChatPage = () => {
     useEffect(() => {
         const fetchChats = async () => {
             try {
-                const response = await api.get("/api/chats");
+                const response = await api.get("/chats");
                 setChats(response.data);
             } catch (err) {
                 console.error("Failed to fetch chats:", err);
@@ -58,10 +58,10 @@ export const ChatPage = () => {
             const fetchMessages = async () => {
                 setLoadingMessages(true);
                 try {
-                    const response = await api.get(`/api/messages/${selectedChat.id}`);
+                    const response = await api.get(`/messages/${selectedChat.id}`);
                     setMessages(response.data);
                     // Mark chat as seen
-                    await api.put(`/api/chats/${selectedChat.id}`);
+                    await api.put(`/chats/${selectedChat.id}`);
                 } catch (err) {
                     console.error("Failed to fetch messages:", err);
                 } finally {
@@ -73,28 +73,26 @@ export const ChatPage = () => {
     }, [selectedChat]);
 
     useEffect(() => {
+        const handleMessage = (data: Message) => {
+            if (selectedChat && selectedChat.id === data.chatId) {
+                setMessages((prev) => [...prev, data]);
+            }
+            // Always update the last message in the chat list
+            setChats((prev) =>
+                prev.map((c) =>
+                    c.id === data.chatId
+                        ? { ...c, lastMessage: data.text, seenBy: [data.userId] }
+                        : c
+                )
+            );
+        };
+
         if (socket) {
-            socket.on("getMessage", (data: Message) => {
-                if (selectedChat && selectedChat.id === data.chatId) {
-                    setMessages((prev: Message[]) => [...prev, data]);
-                    // Also update the chat list last message
-                    setChats((prev: Chat[]) =>
-                        prev.map((c: Chat) =>
-                            c.id === data.chatId ? { ...c, lastMessage: data.text, seenBy: [data.userId] } : c
-                        )
-                    );
-                } else {
-                    // Update chat list last message even if not selected
-                    setChats((prev: Chat[]) =>
-                        prev.map((c: Chat) =>
-                            c.id === data.chatId ? { ...c, lastMessage: data.text, seenBy: [data.userId] } : c
-                        )
-                    );
-                }
-            });
+            socket.on("getMessage", handleMessage);
         }
+
         return () => {
-            socket?.off("getMessage");
+            socket?.off("getMessage", handleMessage);
         };
     }, [socket, selectedChat]);
 
@@ -110,10 +108,10 @@ export const ChatPage = () => {
         setInputText("");
 
         try {
-            const response = await api.post(`/api/messages/${selectedChat.id}`, { text });
+            const response = await api.post(`/messages/${selectedChat.id}`, { text });
             const newMessage = response.data;
 
-            setMessages((prev: Message[]) => [...prev, newMessage]);
+            setMessages((prev) => [...prev, newMessage]);
 
             // Emit socket event
             socket?.emit("sendMessage", {
@@ -122,8 +120,8 @@ export const ChatPage = () => {
             });
 
             // Update local chat list
-            setChats((prev: Chat[]) =>
-                prev.map((c: Chat) =>
+            setChats((prev) =>
+                prev.map((c) =>
                     c.id === selectedChat.id ? { ...c, lastMessage: text, seenBy: [user.id] } : c
                 )
             );

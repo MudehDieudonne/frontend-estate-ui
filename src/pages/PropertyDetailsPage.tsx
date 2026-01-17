@@ -1,131 +1,353 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../lib/api";
+import { useAuth } from "../context/AuthContext";
 import { FeedLayout } from "../components/FeedLayout";
-import { PropertyPostProps } from "../components/PropertyPost";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Card, CardContent } from "../components/ui/card";
-import { Heart, MessageCircle, Share2, MapPin, Bed, Expand, ArrowLeft } from "lucide-react";
+import { Heart, MessageCircle, Share2, MapPin, Bed, Expand, ArrowLeft, Ruler, Utensils, PawPrint, GraduationCap, Bus, UtensilsCrossed, Wallet } from "lucide-react";
+
+export interface PostDetailData {
+    desc: string;
+    utilities?: string;
+    pet?: string;
+    income?: string;
+    size?: number;
+    school?: number;
+    bus?: number;
+    restaurant?: number;
+}
+
+export interface DetailedPropertyPost {
+    id: string;
+    title: string;
+    price: number;
+    images: string[];
+    address: string;
+    city: string;
+    bedroom: number;
+    bathroom: number;
+    latitude: number;
+    longitude: number;
+    type: "rent" | "sale";
+    property: string;
+    createdAt: string;
+    user: {
+        username: string;
+        avatar?: string;
+    };
+    postDetail?: PostDetailData;
+    userId: string;
+    isSaved: boolean;
+}
 
 export const PropertyDetailsPage = () => {
     const { id } = useParams();
-    const [post, setPost] = useState<PropertyPostProps | null>(null);
+    const navigate = useNavigate();
+    const { user } = useAuth();
+    const [post, setPost] = useState<DetailedPropertyPost | null>(null);
     const [loading, setLoading] = useState(true);
-    const [isSaved, setIsSaved] = useState(false);
+    const [activeImage, setActiveImage] = useState(0);
+
+    const fetchPost = async () => {
+        try {
+            const response = await api.get(`/posts/${id}`);
+            setPost(response.data);
+        } catch (err) {
+            console.error("Failed to fetch post details:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchPost = async () => {
-            try {
-                const response = await api.get(`/api/posts/${id}`);
-                setPost(response.data);
-            } catch (err) {
-                console.error("Failed to fetch post details:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchPost();
     }, [id]);
 
+    const handleSave = async () => {
+        if (!post) return;
+        try {
+            await api.post("/users/save", { postId: post.id });
+            setPost({ ...post, isSaved: !post.isSaved });
+        } catch (err) {
+            console.error("Failed to save post:", err);
+        }
+    };
+
+    const handleSendMessage = async () => {
+        if (!post || !user) {
+            navigate("/login");
+            return;
+        }
+        try {
+            await api.post("/chats", { receiverId: post.userId });
+            navigate("/chat");
+        } catch (err) {
+            console.error("Failed to start chat:", err);
+        }
+    };
+
     if (loading) {
-        return <div className="p-20 text-center animate-pulse">Loading property details...</div>;
+        return (
+            <FeedLayout>
+                <div className="p-20 text-center flex flex-col items-center gap-4">
+                    <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                    <p className="animate-pulse">Loading property details...</p>
+                </div>
+            </FeedLayout>
+        );
     }
 
     if (!post) {
         return (
-            <div className="p-20 text-center">
-                <p>Property not found.</p>
-                <Link to="/feed" className="text-primary hover:underline">Back to feed</Link>
-            </div>
+            <FeedLayout>
+                <div className="p-20 text-center space-y-4">
+                    <p className="text-xl font-semibold">Property not found.</p>
+                    <Button asChild>
+                        <Link to="/feed">Back to feed</Link>
+                    </Button>
+                </div>
+            </FeedLayout>
         );
     }
 
     return (
         <FeedLayout>
-            <div className="space-y-6">
+            <div className="max-w-5xl mx-auto space-y-6 pb-20">
                 <Button variant="ghost" asChild className="mb-2">
                     <Link to="/feed" className="flex items-center gap-2">
                         <ArrowLeft className="h-4 w-4" /> Back to Feed
                     </Link>
                 </Button>
 
-                <Card className="overflow-hidden border-primary/20 shadow-lg">
-                    <div className="relative h-[400px]">
-                        <img
-                            src={post.images?.[0] || "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=1000"}
-                            alt={post.title}
-                            className="w-full h-full object-cover"
-                        />
-                        <div className="absolute top-4 right-4 flex gap-2">
-                            <Button
-                                variant="secondary"
-                                size="icon"
-                                className={`rounded-full bg-background/80 backdrop-blur-sm ${isSaved ? "text-primary" : ""}`}
-                                onClick={() => setIsSaved(!isSaved)}
-                            >
-                                <Heart className={`h-5 w-5 ${isSaved ? "fill-primary" : ""}`} />
-                            </Button>
-                            <Button variant="secondary" size="icon" className="rounded-full bg-background/80 backdrop-blur-sm">
-                                <Share2 className="h-5 w-5" />
-                            </Button>
-                        </div>
-                    </div>
-
-                    <CardContent className="p-6 space-y-6">
-                        <div className="flex justify-between items-start">
-                            <div className="space-y-1">
-                                <Badge variant={post.type === "sale" ? "default" : "secondary"}>For {post.type}</Badge>
-                                <h1 className="text-3xl font-bold">{post.title}</h1>
-                                <p className="text-muted-foreground flex items-center text-lg">
-                                    <MapPin className="h-5 w-5 mr-1 text-primary" /> {post.city}
-                                </p>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-3xl font-bold text-primary">${post.price.toLocaleString()}</p>
-                                <p className="text-sm text-muted-foreground">ID: {post.id.substring(0, 8)}</p>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-6 border-y border-primary/10">
-                            <div className="text-center">
-                                <Bed className="h-6 w-6 mx-auto mb-1 text-primary" />
-                                <p className="text-sm font-semibold">{post.bedroom} Bedrooms</p>
-                            </div>
-                            <div className="text-center">
-                                <Expand className="h-6 w-6 mx-auto mb-1 text-primary" />
-                                <p className="text-sm font-semibold capitalize">{post.property}</p>
-                            </div>
-                            {/* Add more icons as needed */}
-                        </div>
-
-                        <div className="space-y-2">
-                            <h2 className="text-xl font-bold">About this property</h2>
-                            <p className="text-foreground/80 leading-relaxed whitespace-pre-wrap">{post.description}</p>
-                        </div>
-
-                        <div className="p-6 bg-muted/50 rounded-xl border border-primary/10 flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <Avatar className="h-12 w-12">
-                                    <AvatarImage src={post.user.avatar} />
-                                    <AvatarFallback>{post.user.username.substring(0, 2).toUpperCase()}</AvatarFallback>
-                                </Avatar>
-                                <div>
-                                    <p className="font-bold">{post.user.username}</p>
-                                    <p className="text-xs text-muted-foreground">Listing Agent</p>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Left Column: Images and Description */}
+                    <div className="lg:col-span-2 space-y-6">
+                        <Card className="overflow-hidden border-primary/20 shadow-lg bg-background">
+                            {/* main image */}
+                            <div className="relative h-[450px] bg-muted">
+                                <img
+                                    src={post.images[activeImage] || "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=1000"}
+                                    alt={post.title}
+                                    className="w-full h-full object-cover transition-all duration-500"
+                                />
+                                <div className="absolute top-4 right-4 flex gap-2">
+                                    <Button
+                                        variant="secondary"
+                                        size="icon"
+                                        className={`rounded-full bg-background/80 backdrop-blur-sm shadow-md hover:bg-background ${post.isSaved ? "text-primary" : ""}`}
+                                        onClick={handleSave}
+                                    >
+                                        <Heart className={`h-5 w-5 ${post.isSaved ? "fill-primary" : ""}`} />
+                                    </Button>
+                                    <Button variant="secondary" size="icon" className="rounded-full bg-background/80 backdrop-blur-sm shadow-md hover:bg-background">
+                                        <Share2 className="h-5 w-5" />
+                                    </Button>
                                 </div>
                             </div>
-                            <div className="flex gap-2">
-                                <Button className="gap-2">
-                                    <MessageCircle className="h-4 w-4" /> Message
-                                </Button>
-                                <Button variant="secondary">Call</Button>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
+
+                            {/* thumbnail gallery */}
+                            {post.images.length > 1 && (
+                                <div className="p-4 flex gap-2 overflow-x-auto bg-muted/20 border-t border-primary/10 scrollbar-hide">
+                                    {post.images.map((img, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => setActiveImage(idx)}
+                                            className={`relative h-20 w-32 flex-shrink-0 rounded-md overflow-hidden border-2 transition-all ${activeImage === idx ? "border-primary opacity-100 scale-105" : "border-transparent opacity-60 hover:opacity-100"}`}
+                                        >
+                                            <img src={img} alt={`${post.title} ${idx}`} className="w-full h-full object-cover" />
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+
+                            <CardContent className="p-8 space-y-8">
+                                <div className="space-y-4">
+                                    <div className="flex flex-wrap gap-2">
+                                        <Badge variant={post.type === "sale" ? "default" : "secondary"} className="uppercase px-3 py-1 font-bold">For {post.type}</Badge>
+                                        <Badge variant="outline" className="uppercase px-3 py-1 font-bold bg-primary/5">{post.property}</Badge>
+                                    </div>
+                                    <div className="flex justify-between items-end gap-4">
+                                        <div className="space-y-1">
+                                            <h1 className="text-4xl font-black text-primary tracking-tight leading-tight">{post.title}</h1>
+                                            <p className="text-muted-foreground flex items-center text-lg">
+                                                <MapPin className="h-5 w-5 mr-1 text-primary" /> {post.address}, {post.city}
+                                            </p>
+                                        </div>
+                                        <div className="text-right flex flex-col items-end">
+                                            <p className="text-4xl font-black text-primary">${post.price.toLocaleString()}</p>
+                                            <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mt-1">Property ID: {post.id.slice(-8).toUpperCase()}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-8 border-y border-primary/10">
+                                    <div className="flex flex-col items-center gap-2">
+                                        <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                                            <Bed className="h-5 w-5" />
+                                        </div>
+                                        <span className="text-sm font-bold">{post.bedroom} Bedrooms</span>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                                            <Expand className="h-5 w-5" />
+                                        </div>
+                                        <span className="text-sm font-bold">{post.bathroom} Bathrooms</span>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                                            <Ruler className="h-5 w-5" />
+                                        </div>
+                                        <span className="text-sm font-bold">{post.postDetail?.size || "N/A"} sqft</span>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                                            <Calendar className="h-5 w-5" />
+                                        </div>
+                                        <span className="text-sm font-bold">{new Date(post.createdAt).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <h2 className="text-2xl font-black flex items-center gap-2">
+                                        Description
+                                    </h2>
+                                    <p className="text-foreground/80 leading-relaxed text-lg whitespace-pre-wrap">{post.postDetail?.desc || "No description provided."}</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* Right Column: Listing Agent & Quick Details */}
+                    <div className="space-y-6">
+                        {/* Agent Card */}
+                        <Card className="border-primary/20 shadow-lg bg-background">
+                            <CardContent className="p-6 text-center">
+                                <Avatar className="h-20 w-20 mx-auto border-4 border-primary/20 shadow-md">
+                                    <AvatarImage src={post.user.avatar} />
+                                    <AvatarFallback className="text-2xl">{post.user.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                </Avatar>
+                                <h3 className="mt-4 text-xl font-bold">{post.user.username}</h3>
+                                <p className="text-sm text-muted-foreground mb-6">Verified Listing Agent</p>
+                                <div className="grid grid-cols-1 gap-2">
+                                    <Button onClick={handleSendMessage} className="w-full gap-2 font-bold py-6">
+                                        <MessageCircle className="h-5 w-5" /> Send Message
+                                    </Button>
+                                    <Button variant="outline" className="w-full font-bold border-primary text-primary hover:bg-primary/5 py-6">
+                                        Request Tour
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Property Specs */}
+                        <Card className="border-primary/20 shadow-lg bg-background">
+                            <CardContent className="p-6 space-y-6">
+                                <h3 className="text-lg font-black border-b pb-2 border-primary/10 uppercase tracking-widest">General Details</h3>
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 bg-primary/10 rounded flex items-center justify-center text-primary">
+                                            <Utensils className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-muted-foreground uppercase font-bold tracking-tighter">Utilities</p>
+                                            <p className="text-sm font-bold">{post.postDetail?.utilities === "owner" ? "Owner is responsible" : "Tenant is responsible"}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 bg-primary/10 rounded flex items-center justify-center text-primary">
+                                            <PawPrint className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-muted-foreground uppercase font-bold tracking-tighter">Pet Policy</p>
+                                            <p className="text-sm font-bold">{post.postDetail?.pet === "allowed" ? "Pets Allowed" : "Pets Not Allowed"}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 bg-primary/10 rounded flex items-center justify-center text-primary">
+                                            <Wallet className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-muted-foreground uppercase font-bold tracking-tighter">Income Requirement</p>
+                                            <p className="text-sm font-bold tracking-tight">{post.postDetail?.income || "Contact agent"}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Location Details */}
+                        <Card className="border-primary/20 shadow-lg bg-background">
+                            <CardContent className="p-6 space-y-6">
+                                <h3 className="text-lg font-black border-b pb-2 border-primary/10 uppercase tracking-widest">Nearby Services</h3>
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <GraduationCap className="h-5 w-5 text-primary" />
+                                            <span className="text-sm font-bold">School</span>
+                                        </div>
+                                        <Badge variant="secondary" className="font-bold">{post.postDetail?.school ? `${post.postDetail.school}m away` : "Contact agent"}</Badge>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <Bus className="h-5 w-5 text-primary" />
+                                            <span className="text-sm font-bold">Bus Stop</span>
+                                        </div>
+                                        <Badge variant="secondary" className="font-bold">{post.postDetail?.bus ? `${post.postDetail.bus}m away` : "Contact agent"}</Badge>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <UtensilsCrossed className="h-5 w-5 text-primary" />
+                                            <span className="text-sm font-bold">Restaurant</span>
+                                        </div>
+                                        <Badge variant="secondary" className="font-bold">{post.postDetail?.restaurant ? `${post.postDetail.restaurant}m away` : "Contact agent"}</Badge>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
             </div>
         </FeedLayout>
     );
 };
+
+const Loader2 = ({ className }: { className?: string }) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={className}
+    >
+        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+    </svg>
+);
+
+const Calendar = ({ className }: { className?: string }) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={className}
+    >
+        <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+    </svg>
+);
+
