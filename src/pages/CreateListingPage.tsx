@@ -123,8 +123,9 @@ export const CreateListingPage = () => {
 
             await api.post("/posts", payload);
             navigate("/feed");
-        } catch (err: unknown) {
-            const errorMessage = err instanceof Error ? err.message : "Failed to create listing. Please try again.";
+        } catch (err: any) {
+            console.error("Create Listing Error:", err);
+            const errorMessage = err.response?.data?.message || err.message || "Failed to create listing. Please try again.";
             setError(errorMessage);
         } finally {
             setLoading(false);

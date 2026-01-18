@@ -55,8 +55,9 @@ export const PropertyDetailsPage = () => {
         try {
             const response = await api.get(`/posts/${id}`);
             setPost(response.data);
-        } catch (err) {
+        } catch (err: any) {
             console.error("Failed to fetch post details:", err);
+            // Optionally set an error state to show to user if needed
         } finally {
             setLoading(false);
         }

@@ -39,15 +39,19 @@ export const ProfilePage = () => {
         }
     }, [user]);
 
+    const [error, setError] = useState("");
+
     const updateAvatar = async (url: string) => {
+        setError("");
         try {
             await api.put("/users/" + user?.id, { avatar: url });
             if (updateUser) {
                 updateUser({ ...user!, avatar: url });
             }
             setShowUrlInput(false);
-        } catch (err) {
+        } catch (err: any) {
             console.error("Failed to update avatar", err);
+            setError(err.response?.data?.message || "Failed to update avatar.");
         }
     };
 
@@ -56,11 +60,13 @@ export const ProfilePage = () => {
         if (!file) return;
 
         setUploading(true);
+        setError("");
         try {
             const uploadedUrl = await uploadImage(file);
             await updateAvatar(uploadedUrl);
-        } catch (err) {
+        } catch (err: any) {
             console.error("Avatar upload failed", err);
+            setError("Failed to upload image. Please try again.");
         } finally {
             setUploading(false);
         }
@@ -110,6 +116,7 @@ export const ProfilePage = () => {
                         )}
                         <h1 className="mt-4 text-3xl font-bold text-primary">{user?.username}</h1>
                         <p className="text-muted-foreground">{user?.email}</p>
+                        {error && <p className="text-sm text-destructive mt-2 bg-destructive/10 px-2 py-1 rounded">{error}</p>}
 
                         <div className="mt-6 flex gap-2">
                             <Button asChild variant="outline" size="sm">
