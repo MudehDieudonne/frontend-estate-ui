@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Card, CardHeader, CardContent, CardFooter } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Heart, MessageCircle, Share2, MapPin, Bed, Expand } from "lucide-react";
 import { Badge } from "./ui/badge";
+import { useAuth } from "../context/AuthContext";
 
 export interface PropertyPostProps {
     id: string;
@@ -25,7 +26,19 @@ export interface PropertyPostProps {
 }
 
 export const PropertyPost = ({ post }: { post: PropertyPostProps }) => {
+    const { user } = useAuth();
+    const navigate = useNavigate();
     const [isSaved, setIsSaved] = useState(false);
+
+    const handleProtectedAction = (e: React.MouseEvent, action: () => void) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!user) {
+            navigate("/register");
+            return;
+        }
+        action();
+    };
 
     return (
         <Card className="overflow-hidden border-primary/10 hover:border-primary/30 transition-all shadow-sm">
@@ -54,20 +67,29 @@ export const PropertyPost = ({ post }: { post: PropertyPostProps }) => {
                         variant="ghost"
                         size="icon"
                         className={`rounded-full bg-background/50 backdrop-blur-sm transition-colors ${isSaved ? "text-primary" : "text-white"}`}
-                        onClick={() => setIsSaved(!isSaved)}
+                        onClick={(e) => handleProtectedAction(e, () => setIsSaved(!isSaved))}
                     >
                         <Heart className={`h-5 w-5 ${isSaved ? "fill-primary" : ""}`} />
                     </Button>
                 </div>
                 <div className="absolute bottom-4 left-4">
                     <Badge className="bg-primary text-primary-foreground font-bold text-lg px-3 py-1">
-                        ${post.price.toLocaleString()}{post.type === 'rent' ? '/mo' : ''}
+                        {post.price.toLocaleString()} FCFA {post.type === 'rent' ? '/mo' : ''}
                     </Badge>
                 </div>
             </div>
 
             <CardContent className="p-4 space-y-3">
-                <Link to={`/property/${post.id}`} className="block">
+                <Link
+                    to={`/property/${post.id}`}
+                    className="block"
+                    onClick={(e) => {
+                        if (!user) {
+                            e.preventDefault();
+                            navigate("/register");
+                        }
+                    }}
+                >
                     <h3 className="text-xl font-bold hover:text-primary transition-colors line-clamp-1">{post.title}</h3>
                 </Link>
                 <p className="text-sm text-muted-foreground flex items-center">
@@ -83,16 +105,19 @@ export const PropertyPost = ({ post }: { post: PropertyPostProps }) => {
 
             <CardFooter className="p-2 border-t flex items-center justify-between">
                 <div className="flex items-center">
-                    <Button variant="ghost" size="sm" className="gap-2" asChild>
-                        <Link to={`/property/${post.id}`}>
-                            <MessageCircle className="h-4 w-4" /> Inquire
-                        </Link>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="gap-2"
+                        onClick={(e) => handleProtectedAction(e, () => navigate(`/property/${post.id}`))}
+                    >
+                        <MessageCircle className="h-4 w-4" /> Inquire
                     </Button>
                     <Button
                         variant="ghost"
                         size="sm"
                         className="gap-2"
-                        onClick={() => {
+                        onClick={(e) => handleProtectedAction(e, () => {
                             const url = `${window.location.origin}/property/${post.id}`;
                             if (navigator.share) {
                                 navigator.share({
@@ -104,13 +129,17 @@ export const PropertyPost = ({ post }: { post: PropertyPostProps }) => {
                                 navigator.clipboard.writeText(url);
                                 alert("Link copied to clipboard!");
                             }
-                        }}
+                        })}
                     >
                         <Share2 className="h-4 w-4" /> Share
                     </Button>
                 </div>
-                <Button variant="link" size="sm" asChild>
-                    <Link to={`/property/${post.id}`}>View Details</Link>
+                <Button
+                    variant="link"
+                    size="sm"
+                    onClick={(e) => handleProtectedAction(e, () => navigate(`/property/${post.id}`))}
+                >
+                    View Details
                 </Button>
             </CardFooter>
         </Card>

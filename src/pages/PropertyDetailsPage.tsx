@@ -191,7 +191,7 @@ export const PropertyDetailsPage = () => {
                                             </p>
                                         </div>
                                         <div className="text-right flex flex-col items-end">
-                                            <p className="text-4xl font-black text-primary">${post.price.toLocaleString()}{post.type === 'rent' ? '/mo' : ''}</p>
+                                            <p className="text-4xl font-black text-primary">{post.price.toLocaleString()} FCFA {post.type === 'rent' ? '/mo' : ''}</p>
                                             <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mt-1">Property ID: {post.id.slice(-8).toUpperCase()}</p>
                                         </div>
                                     </div>

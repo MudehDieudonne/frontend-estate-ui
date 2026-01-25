@@ -22,7 +22,7 @@ export const About = () => {
                 IRED (Iforty Real Estate Development)
               </h2>
               <p className="text-xl text-muted-foreground mt-4">
-                IRED (Iforty Real Estate Development) is a premier real estate agency dedicated to
+                <strong>IRED</strong>, which stands for <strong>Iforty Real Estate Development</strong>, is a premier real estate agency dedicated to
                 connecting discerning clients with extraordinary properties.
                 With over two decades of experience, we pride ourselves on
                 our unparalleled market knowledge, integrity, and commitment

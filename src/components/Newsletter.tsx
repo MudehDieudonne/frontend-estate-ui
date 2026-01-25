@@ -1,10 +1,24 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { useChat } from "@/context/ChatContext";
+import { useAuth } from "@/context/AuthContext";
 
 export const Newsletter = () => {
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    console.log("Subscribed!");
+  const navigate = useNavigate();
+  const { openChatWith } = useChat();
+  const { user } = useAuth();
+
+  const handleSubscribe = () => {
+    navigate("/register");
+  };
+
+  const handleInvest = () => {
+    if (!user) {
+      navigate("/register");
+      return;
+    }
+    // Mukum Winston's ID placeholder - in a real app this would be a constant or fetched
+    openChatWith("mukum-id-placeholder");
   };
 
   return (
@@ -15,7 +29,7 @@ export const Newsletter = () => {
         <h3 className="text-center text-4xl md:text-5xl font-bold">
           Stay Connected with{" "}
           <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
-            Elite Estates
+            IRED
           </span>
         </h3>
         <p className="text-xl text-muted-foreground text-center mt-4 mb-8">
@@ -23,17 +37,14 @@ export const Newsletter = () => {
           estate opportunities delivered directly to your inbox.
         </p>
 
-        <form
-          className="flex flex-col w-full md:flex-row md:w-6/12 lg:w-4/12 mx-auto gap-4 md:gap-2"
-          onSubmit={handleSubmit}
-        >
-          <Input
-            placeholder="your.email@example.com"
-            className="bg-muted/50 dark:bg-muted/80 "
-            aria-label="email"
-          />
-          <Button>Join Now</Button>
-        </form>
+        <div className="flex flex-col md:flex-row justify-center items-center gap-4">
+          <Button onClick={handleSubscribe} className="w-full md:w-auto px-10 py-6 text-lg font-bold">
+            Subscribe Now
+          </Button>
+          <Button onClick={handleInvest} variant="outline" className="w-full md:w-auto px-10 py-6 text-lg font-bold border-primary text-primary">
+            Invest with IRED
+          </Button>
+        </div>
       </div>
 
       <hr className="w-11/12 mx-auto" />

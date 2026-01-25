@@ -157,12 +157,16 @@ export const FloatingChat = () => {
     if (!user) return null;
 
     return (
-        <div className="fixed bottom-0 right-4 z-50 flex flex-row-reverse items-end gap-2">
+        <div className={cn(
+            "fixed bottom-0 right-4 z-[100] flex flex-col items-end gap-2 transition-all duration-300",
+            isOpen && !isMinimized && "w-full sm:w-80 right-0 sm:right-4 h-full sm:h-auto"
+        )}>
             {/* Chat Window */}
             {isOpen && (
                 <div className={cn(
-                    "w-80 bg-background border border-primary/20 rounded-t-xl shadow-2xl flex flex-col transition-all duration-300 overflow-hidden",
-                    isMinimized ? "h-12" : "h-[450px]"
+                    "bg-background border border-primary/20 rounded-t-xl shadow-2xl flex flex-col transition-all duration-300 overflow-hidden",
+                    isOpen && !isMinimized && "w-full h-full sm:h-[450px] sm:w-80",
+                    isMinimized && "w-80 h-12"
                 )}>
                     {/* Header */}
                     <div
@@ -231,12 +235,12 @@ export const FloatingChat = () => {
                                             ) : messages.map((msg) => (
                                                 <div
                                                     key={msg.id}
-                                                    className={`flex ${msg.userId === user.id ? "justify-end" : "justify-start"}`}
+                                                    className={`flex ${msg.userId === user?.id ? "justify-end" : "justify-start"}`}
                                                 >
                                                     <div
                                                         className={cn(
                                                             "max-w-[85%] p-2 rounded-xl text-xs shadow-sm",
-                                                            msg.userId === user.id
+                                                            msg.userId === user?.id
                                                                 ? "bg-primary text-primary-foreground rounded-tr-none"
                                                                 : "bg-background border border-primary/10 rounded-tl-none"
                                                         )}
@@ -244,7 +248,7 @@ export const FloatingChat = () => {
                                                         <p>{msg.text}</p>
                                                         <p className={cn(
                                                             "text-[8px] mt-1 text-right",
-                                                            msg.userId === user.id ? "text-primary-foreground/60" : "text-muted-foreground"
+                                                            msg.userId === user?.id ? "text-primary-foreground/60" : "text-muted-foreground"
                                                         )}>
                                                             {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                         </p>
@@ -291,12 +295,12 @@ export const FloatingChat = () => {
                                                         <p className="font-bold text-xs truncate">{chat.receiver.username}</p>
                                                         <p className={cn(
                                                             "text-[10px] truncate",
-                                                            chat.seenBy.includes(user.id) ? "text-muted-foreground" : "font-black text-foreground"
+                                                            chat.seenBy.includes(user?.id || "") ? "text-muted-foreground" : "font-black text-foreground"
                                                         )}>
                                                             {chat.lastMessage || "Start chatting..."}
                                                         </p>
                                                     </div>
-                                                    {!chat.seenBy.includes(user.id) && (
+                                                    {!chat.seenBy.includes(user?.id || "") && (
                                                         <div className="h-1.5 w-1.5 rounded-full bg-primary" />
                                                     )}
                                                 </div>
@@ -316,19 +320,33 @@ export const FloatingChat = () => {
 
             {/* Launcher Button */}
             {!isOpen && (
-                <Button
-                    className="rounded-t-xl rounded-b-none h-12 w-64 shadow-2xl flex items-center justify-between px-4 bg-primary text-primary-foreground hover:bg-primary/95"
-                    onClick={() => {
-                        setIsOpen(true);
-                        setIsMinimized(false);
-                    }}
-                >
-                    <div className="flex items-center gap-2">
-                        <MessageSquare className="h-5 w-5" />
-                        <span className="font-bold">Messaging</span>
-                    </div>
-                    <ChevronUp className="h-4 w-4" />
-                </Button>
+                <>
+                    {/* Desktop Launcher */}
+                    <Button
+                        className="hidden sm:flex rounded-t-xl rounded-b-none h-12 w-64 shadow-2xl items-center justify-between px-4 bg-primary text-primary-foreground hover:bg-primary/95"
+                        onClick={() => {
+                            setIsOpen(true);
+                            setIsMinimized(false);
+                        }}
+                    >
+                        <div className="flex items-center gap-2">
+                            <MessageSquare className="h-5 w-5" />
+                            <span className="font-bold">Messaging</span>
+                        </div>
+                        <ChevronUp className="h-4 w-4" />
+                    </Button>
+
+                    {/* Mobile Circular Icon */}
+                    <Button
+                        className="sm:hidden rounded-full h-14 w-14 shadow-2xl flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/95 mb-4 mr-2"
+                        onClick={() => {
+                            setIsOpen(true);
+                            setIsMinimized(false);
+                        }}
+                    >
+                        <MessageSquare className="h-6 w-6" />
+                    </Button>
+                </>
             )}
         </div>
     );

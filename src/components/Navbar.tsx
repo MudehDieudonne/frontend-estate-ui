@@ -69,7 +69,7 @@ export const Navbar = () => {
               className="ml-2 font-bold text-xl flex"
             >
               <LogoIcon />
-              IRED (Iforty Real Estate Development)
+              IRED
             </Link>
           </NavigationMenuItem>
 
@@ -91,7 +91,7 @@ export const Navbar = () => {
               <SheetContent side={"left"}>
                 <SheetHeader>
                   <SheetTitle className="font-bold text-xl">
-                    IRED (Iforty Real Estate Development)
+                    IRED
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col justify-center items-center gap-2 mt-4">
