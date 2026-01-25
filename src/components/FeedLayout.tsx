@@ -1,5 +1,6 @@
 import React from "react";
 import { Navbar } from "./Navbar";
+import { FloatingChat } from "./FloatingChat";
 
 interface FeedLayoutProps {
     leftSidebar?: React.ReactNode;
@@ -33,6 +34,7 @@ export const FeedLayout: React.FC<FeedLayoutProps> = ({ leftSidebar, children, r
                     </aside>
                 </div>
             </main>
+            <FloatingChat />
         </div>
     );
 };

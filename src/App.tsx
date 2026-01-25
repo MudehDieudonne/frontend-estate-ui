@@ -9,6 +9,8 @@ import { ChatPage } from "./pages/ChatPage";
 import { CreateListingPage } from "./pages/CreateListingPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { ComingSoon } from "./pages/ComingSoon";
+import { FAQPage } from "./pages/FAQPage";
+import { ServicesPage } from "./pages/ServicesPage";
 import { useAuth } from "./context/AuthContext";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import "./App.css";
@@ -18,21 +20,13 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={user ? <Navigate to="/feed" /> : <LandingPage />} />
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={user ? <Navigate to="/feed" /> : <LoginPage />} />
       <Route path="/register" element={user ? <Navigate to="/feed" /> : <RegisterPage />} />
 
-      <Route path="/feed" element={
-        <ProtectedRoute>
-          <FeedPage />
-        </ProtectedRoute>
-      } />
+      <Route path="/feed" element={<FeedPage />} />
 
-      <Route path="/property/:id" element={
-        <ProtectedRoute>
-          <PropertyDetailsPage />
-        </ProtectedRoute>
-      } />
+      <Route path="/property/:id" element={<PropertyDetailsPage />} />
 
       <Route path="/profile" element={
         <ProtectedRoute>
@@ -54,8 +48,8 @@ function App() {
 
       <Route path="/hotels" element={<ComingSoon title="Hotels" />} />
       <Route path="/guest-houses" element={<ComingSoon title="Guest Houses" />} />
-      <Route path="/services" element={<ComingSoon title="Services" />} />
-      <Route path="/faq" element={<ComingSoon title="FAQ" />} />
+      <Route path="/services" element={<ServicesPage />} />
+      <Route path="/faq" element={<FAQPage />} />
 
       <Route path="/settings" element={
         <ProtectedRoute>

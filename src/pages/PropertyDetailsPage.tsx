@@ -1,13 +1,30 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 import { FeedLayout } from "../components/FeedLayout";
+import { useChat } from "../context/ChatContext";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Card, CardContent } from "../components/ui/card";
-import { Heart, MessageCircle, Share2, MapPin, Bed, Expand, ArrowLeft, Ruler, Utensils, PawPrint, GraduationCap, Bus, UtensilsCrossed, Wallet } from "lucide-react";
+import { Heart, MessageCircle, Share2, MapPin, Bed, Expand, ArrowLeft, Ruler, Utensils, PawPrint, GraduationCap, Bus, UtensilsCrossed, Wallet, Loader2, Calendar, Sofa } from "lucide-react";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+// Fix Leaflet marker icon issue
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+
+// @ts-expect-error - Fix Leaflet icon issue
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconUrl: markerIcon,
+    iconRetinaUrl: markerIcon2x,
+    shadowUrl: markerShadow,
+});
 
 export interface PostDetailData {
     desc: string;
@@ -18,6 +35,7 @@ export interface PostDetailData {
     school?: number;
     bus?: number;
     restaurant?: number;
+    parlor?: number;
 }
 
 export interface DetailedPropertyPost {
@@ -47,25 +65,25 @@ export const PropertyDetailsPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { user } = useAuth();
+    const { openChatWith } = useChat();
     const [post, setPost] = useState<DetailedPropertyPost | null>(null);
     const [loading, setLoading] = useState(true);
     const [activeImage, setActiveImage] = useState(0);
 
-    const fetchPost = async () => {
+    const fetchPost = useCallback(async () => {
         try {
             const response = await api.get(`/posts/${id}`);
             setPost(response.data);
         } catch (err: any) {
             console.error("Failed to fetch post details:", err);
-            // Optionally set an error state to show to user if needed
         } finally {
             setLoading(false);
         }
-    };
+    }, [id]);
 
     useEffect(() => {
         fetchPost();
-    }, [id]);
+    }, [id, fetchPost]);
 
     const handleSave = async () => {
         if (!post) return;
@@ -82,12 +100,7 @@ export const PropertyDetailsPage = () => {
             navigate("/login");
             return;
         }
-        try {
-            await api.post("/chats", { receiverId: post.userId });
-            navigate("/chat");
-        } catch (err) {
-            console.error("Failed to start chat:", err);
-        }
+        openChatWith(post.userId);
     };
 
     if (loading) {
@@ -178,35 +191,46 @@ export const PropertyDetailsPage = () => {
                                             </p>
                                         </div>
                                         <div className="text-right flex flex-col items-end">
-                                            <p className="text-4xl font-black text-primary">${post.price.toLocaleString()}</p>
+                                            <p className="text-4xl font-black text-primary">${post.price.toLocaleString()}{post.type === 'rent' ? '/mo' : ''}</p>
                                             <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mt-1">Property ID: {post.id.slice(-8).toUpperCase()}</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-8 border-y border-primary/10">
+                                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 py-8 border-y border-primary/10">
                                     <div className="flex flex-col items-center gap-2">
                                         <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
                                             <Bed className="h-5 w-5" />
                                         </div>
-                                        <span className="text-sm font-bold">{post.bedroom} Bedrooms</span>
+                                        <span className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground">Bedrooms</span>
+                                        <span className="text-sm font-bold">{post.bedroom}</span>
                                     </div>
                                     <div className="flex flex-col items-center gap-2">
                                         <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
                                             <Expand className="h-5 w-5" />
                                         </div>
-                                        <span className="text-sm font-bold">{post.bathroom} Bathrooms</span>
+                                        <span className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground">Bathrooms</span>
+                                        <span className="text-sm font-bold">{post.bathroom}</span>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                                            <Sofa className="h-5 w-5" />
+                                        </div>
+                                        <span className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground">Parlors</span>
+                                        <span className="text-sm font-bold">{post.postDetail?.parlor || "1"}</span>
                                     </div>
                                     <div className="flex flex-col items-center gap-2">
                                         <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
                                             <Ruler className="h-5 w-5" />
                                         </div>
-                                        <span className="text-sm font-bold">{post.postDetail?.size || "N/A"} sqft</span>
+                                        <span className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground">Size</span>
+                                        <span className="text-sm font-bold">{post.postDetail?.size ? `${post.postDetail.size} sqft` : "N/A"}</span>
                                     </div>
                                     <div className="flex flex-col items-center gap-2">
                                         <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
                                             <Calendar className="h-5 w-5" />
                                         </div>
+                                        <span className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground">Listed</span>
                                         <span className="text-sm font-bold">{new Date(post.createdAt).toLocaleDateString()}</span>
                                     </div>
                                 </div>
@@ -216,6 +240,22 @@ export const PropertyDetailsPage = () => {
                                         Description
                                     </h2>
                                     <p className="text-foreground/80 leading-relaxed text-lg whitespace-pre-wrap">{post.postDetail?.desc || "No description provided."}</p>
+                                </div>
+
+                                {/* Map Section */}
+                                <div className="space-y-4 pt-6">
+                                    <h2 className="text-2xl font-black flex items-center gap-2">
+                                        <MapPin className="h-6 w-6 text-primary" /> Location
+                                    </h2>
+                                    <div className="h-[300px] w-full rounded-xl overflow-hidden border-2 border-primary/10 shadow-inner">
+                                        <MapContainer center={[post.latitude, post.longitude]} zoom={15} className="h-full w-full">
+                                            <TileLayer
+                                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                            />
+                                            <Marker position={[post.latitude, post.longitude]} />
+                                        </MapContainer>
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
@@ -236,7 +276,11 @@ export const PropertyDetailsPage = () => {
                                     <Button onClick={handleSendMessage} className="w-full gap-2 font-bold py-6">
                                         <MessageCircle className="h-5 w-5" /> Send Message
                                     </Button>
-                                    <Button variant="outline" className="w-full font-bold border-primary text-primary hover:bg-primary/5 py-6">
+                                    <Button
+                                        variant="outline"
+                                        className="w-full font-bold border-primary text-primary hover:bg-primary/5 py-6"
+                                        onClick={() => alert("Tour request sent to the agent! They will contact you shortly.")}
+                                    >
                                         Request Tour
                                     </Button>
                                 </div>
@@ -315,40 +359,4 @@ export const PropertyDetailsPage = () => {
     );
 };
 
-const Loader2 = ({ className }: { className?: string }) => (
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className={className}
-    >
-        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-    </svg>
-);
-
-const Calendar = ({ className }: { className?: string }) => (
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className={className}
-    >
-        <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-        <line x1="16" y1="2" x2="16" y2="6" />
-        <line x1="8" y1="2" x2="8" y2="6" />
-        <line x1="3" y1="10" x2="21" y2="10" />
-    </svg>
-);
 

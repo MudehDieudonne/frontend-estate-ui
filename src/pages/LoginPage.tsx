@@ -26,8 +26,14 @@ export const LoginPage = () => {
             const response = await api.post("/auth/login", { username, password });
             login(response.data);
             navigate("/feed");
-        } catch (err: unknown) {
-            const errorMessage = err instanceof Error ? err.message : "Login failed. Please check your credentials.";
+        } catch (err: any) {
+            console.error("Login Debug Info:", {
+                status: err.response?.status,
+                statusText: err.response?.statusText,
+                data: err.response?.data,
+                fullError: err
+            });
+            const errorMessage = err.response?.data?.message || err.message || "Login failed. Please check your credentials.";
             setError(errorMessage);
         } finally {
             setLoading(false);

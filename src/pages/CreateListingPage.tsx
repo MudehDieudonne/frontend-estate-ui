@@ -11,7 +11,7 @@ import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Label } from "../components/ui/label";
-import { X, Loader2, Upload, Plus } from "lucide-react";
+import { X, Loader2, Upload, Plus, Info } from "lucide-react";
 import { FaHome, FaCamera, FaMapMarkerAlt } from "react-icons/fa";
 import { uploadMultipleImages } from "../lib/cloudinary";
 
@@ -55,6 +55,11 @@ export const CreateListingPage = () => {
     const [bathroom, setBathroom] = useState("1");
     const [type, setType] = useState<"rent" | "sale">("sale");
     const [property, setProperty] = useState("apartment");
+    const [parlor, setParlor] = useState("1");
+    const [size, setSize] = useState("");
+    const [school, setSchool] = useState("");
+    const [bus, setBus] = useState("");
+    const [restaurant, setRestaurant] = useState("");
     const [images, setImages] = useState<string[]>([]);
     const [position, setPosition] = useState<L.LatLng | null>(new L.LatLng(3.848, 11.5021)); // Default to Yaoundé
     const [uploading, setUploading] = useState(false);
@@ -119,6 +124,13 @@ export const CreateListingPage = () => {
                 images,
                 latitude: position.lat,
                 longitude: position.lng,
+                postDetail: {
+                    size: Number(size),
+                    parlor: Number(parlor),
+                    school: Number(school),
+                    bus: Number(bus),
+                    restaurant: Number(restaurant),
+                }
             };
 
             await api.post("/posts", payload);
@@ -230,6 +242,18 @@ export const CreateListingPage = () => {
                                     />
                                 </div>
                                 <div className="space-y-2">
+                                    <Label htmlFor="parlor">Parlors</Label>
+                                    <Input
+                                        id="parlor"
+                                        type="number"
+                                        value={parlor}
+                                        onChange={(e) => setParlor(e.target.value)}
+                                        min="0"
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
                                     <Label htmlFor="bathroom">Bathrooms</Label>
                                     <Input
                                         id="bathroom"
@@ -238,6 +262,48 @@ export const CreateListingPage = () => {
                                         onChange={(e) => setBathroom(e.target.value)}
                                         min="0"
                                         required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="size">Size (sqft/sqm)</Label>
+                                    <Input
+                                        id="size"
+                                        type="number"
+                                        value={size}
+                                        onChange={(e) => setSize(e.target.value)}
+                                        placeholder="e.g. 120"
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-3 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="school">Nearby School (m)</Label>
+                                    <Input
+                                        id="school"
+                                        type="number"
+                                        value={school}
+                                        onChange={(e) => setSchool(e.target.value)}
+                                        placeholder="e.g. 500"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="bus">Nearby Bus (m)</Label>
+                                    <Input
+                                        id="bus"
+                                        type="number"
+                                        value={bus}
+                                        onChange={(e) => setBus(e.target.value)}
+                                        placeholder="e.g. 200"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="restaurant">Restaurant (m)</Label>
+                                    <Input
+                                        id="restaurant"
+                                        type="number"
+                                        value={restaurant}
+                                        onChange={(e) => setRestaurant(e.target.value)}
+                                        placeholder="e.g. 300"
                                     />
                                 </div>
                             </div>
@@ -337,7 +403,7 @@ export const CreateListingPage = () => {
                                 )}
                                 {images.length < 3 && (
                                     <p className="text-xs text-muted-foreground flex items-center gap-1">
-                                        <Loader2 className="h-3 w-3 animate-spin" /> {3 - images.length} more images required.
+                                        <Info className="h-3 w-3 text-primary" /> {3 - images.length} more images required.
                                     </p>
                                 )}
                             </CardContent>

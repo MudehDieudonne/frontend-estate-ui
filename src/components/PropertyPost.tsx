@@ -61,7 +61,7 @@ export const PropertyPost = ({ post }: { post: PropertyPostProps }) => {
                 </div>
                 <div className="absolute bottom-4 left-4">
                     <Badge className="bg-primary text-primary-foreground font-bold text-lg px-3 py-1">
-                        ${post.price.toLocaleString()}
+                        ${post.price.toLocaleString()}{post.type === 'rent' ? '/mo' : ''}
                     </Badge>
                 </div>
             </div>
@@ -83,10 +83,29 @@ export const PropertyPost = ({ post }: { post: PropertyPostProps }) => {
 
             <CardFooter className="p-2 border-t flex items-center justify-between">
                 <div className="flex items-center">
-                    <Button variant="ghost" size="sm" className="gap-2">
-                        <MessageCircle className="h-4 w-4" /> Inquire
+                    <Button variant="ghost" size="sm" className="gap-2" asChild>
+                        <Link to={`/property/${post.id}`}>
+                            <MessageCircle className="h-4 w-4" /> Inquire
+                        </Link>
                     </Button>
-                    <Button variant="ghost" size="sm" className="gap-2">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="gap-2"
+                        onClick={() => {
+                            const url = `${window.location.origin}/property/${post.id}`;
+                            if (navigator.share) {
+                                navigator.share({
+                                    title: post.title,
+                                    text: post.description,
+                                    url: url,
+                                }).catch(console.error);
+                            } else {
+                                navigator.clipboard.writeText(url);
+                                alert("Link copied to clipboard!");
+                            }
+                        }}
+                    >
                         <Share2 className="h-4 w-4" /> Share
                     </Button>
                 </div>

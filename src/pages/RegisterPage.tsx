@@ -22,8 +22,14 @@ export const RegisterPage = () => {
             await api.post("/auth/register", { username, email, password });
             // Redirect to login after successful registration
             navigate("/login", { state: { message: "Account created successfully! Please login." } });
-        } catch (err: unknown) {
-            const errorMessage = err instanceof Error ? err.message : "Registration failed. Please try again.";
+        } catch (err: any) {
+            console.error("Registration Debug Info:", {
+                status: err.response?.status,
+                statusText: err.response?.statusText,
+                data: err.response?.data,
+                fullError: err
+            });
+            const errorMessage = err.response?.data?.message || err.message || "Registration failed. Please try again.";
             setError(errorMessage);
         } finally {
             setLoading(false);

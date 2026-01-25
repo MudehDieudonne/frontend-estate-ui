@@ -54,14 +54,20 @@ export const FeedPage = () => {
                 <p className="text-xs text-muted-foreground">{user?.email}</p>
             </CardHeader>
             <CardContent className="p-2 space-y-1">
-                <Button variant="ghost" className="w-full justify-start gap-3 text-sm">
-                    <Home className="h-4 w-4 text-primary" /> Feed
+                <Button variant="ghost" className="w-full justify-start gap-3 text-sm" asChild>
+                    <Link to="/feed">
+                        <Home className="h-4 w-4 text-primary" /> Feed
+                    </Link>
                 </Button>
-                <Button variant="ghost" className="w-full justify-start gap-3 text-sm">
-                    <Bookmark className="h-4 w-4 text-primary" /> Saved Properties
+                <Button variant="ghost" className="w-full justify-start gap-3 text-sm" asChild>
+                    <Link to="/profile">
+                        <Bookmark className="h-4 w-4 text-primary" /> Saved Properties
+                    </Link>
                 </Button>
-                <Button variant="ghost" className="w-full justify-start gap-3 text-sm">
-                    <History className="h-4 w-4 text-primary" /> My Listings
+                <Button variant="ghost" className="w-full justify-start gap-3 text-sm" asChild>
+                    <Link to="/profile">
+                        <History className="h-4 w-4 text-primary" /> My Listings
+                    </Link>
                 </Button>
                 <div className="pt-2">
                     <Button className="w-full gap-2" size="sm" asChild>
