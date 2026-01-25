@@ -13,7 +13,7 @@ export const Footer = () => {
             className="font-bold text-xl flex"
           >
             <LogoIcon />
-            Elite Estates
+            IRED (Iforty Real Estate Development)
           </a>
         </div>
 
@@ -152,7 +152,7 @@ export const Footer = () => {
 
       <section className="container pb-14 text-center">
         <h3>
-          &copy; 2026 Elite Estates. All rights reserved.
+          &copy; 2026 IRED (Iforty Real Estate Development). All rights reserved.
         </h3>
       </section>
     </footer>

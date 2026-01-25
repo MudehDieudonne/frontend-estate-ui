@@ -10,7 +10,7 @@ export const About = () => {
         <div className="px-6 flex flex-col-reverse md:flex-row gap-8 md:gap-12">
           <img
             src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop"
-            alt="Elite Estates Office"
+            alt="IRED Office"
             className="w-[300px] object-contain rounded-lg"
           />
           <div className="bg-green-0 flex flex-col justify-between">
@@ -19,10 +19,10 @@ export const About = () => {
                 <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
                   About{" "}
                 </span>
-                Elite Estates
+                IRED (Iforty Real Estate Development)
               </h2>
               <p className="text-xl text-muted-foreground mt-4">
-                Elite Estates is a premier real estate agency dedicated to
+                IRED (Iforty Real Estate Development) is a premier real estate agency dedicated to
                 connecting discerning clients with extraordinary properties.
                 With over two decades of experience, we pride ourselves on
                 our unparalleled market knowledge, integrity, and commitment

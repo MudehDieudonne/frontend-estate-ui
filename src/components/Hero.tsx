@@ -17,7 +17,7 @@ export const Hero = () => {
             <span className="inline bg-gradient-to-r from-[#B8860B] to-[#F5C147] text-transparent bg-clip-text">
               Home
             </span>{" "}
-            with Elite Estates
+            with IRED
           </h2>
         </main>
 
