@@ -34,7 +34,7 @@ export const HeroCards = () => {
 
         <CardContent>Exclusive 2-bedroom suite with floor-to-ceiling windows.</CardContent>
         <CardFooter className="flex justify-between items-center">
-          <span className="font-bold text-primary">$1,250,000</span>
+          <span className="font-bold text-primary">1,250,000 FCFA</span>
           <Badge variant="secondary">Featured</Badge>
         </CardFooter>
       </Card>
@@ -90,7 +90,7 @@ export const HeroCards = () => {
             </Badge>
           </CardTitle>
           <div className="flex flex-col">
-            <span className="text-3xl font-bold">$4,500,000</span>
+            <span className="text-3xl font-bold">4,500,000 FCFA</span>
             <span className="text-muted-foreground text-sm">Oceanview Estates</span>
           </div>
 
