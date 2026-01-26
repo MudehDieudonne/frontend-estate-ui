@@ -22,7 +22,7 @@ export const SettingsPage = () => {
         setError("");
         setSuccess("");
         try {
-            const res = await api.put(`/users/${user?.id}`, { username: name });
+            await api.put(`/users/${user?.id}`, { username: name });
             if (updateUser && user) {
                 updateUser({ ...user, username: name });
             }
