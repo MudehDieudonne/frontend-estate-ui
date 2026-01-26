@@ -47,7 +47,7 @@ export const HeroCards = () => {
             alt="Agent avatar"
             className="absolute grayscale-[0%] -top-12 rounded-full w-24 h-24 aspect-square object-cover"
           />
-          <CardTitle className="text-center">Marcus Sterling</CardTitle>
+          <CardTitle className="text-center">Mukum Winston</CardTitle>
           <CardDescription className="font-normal text-primary">
             Senior Real Estate Advisor
           </CardDescription>
@@ -72,7 +72,7 @@ export const HeroCards = () => {
             >
               <Linkedin size="20" />
             </a>
-            <Button size="sm">Contact Marcus</Button>
+            <Button size="sm">Contact Winston</Button>
           </div>
         </CardFooter>
       </Card>
