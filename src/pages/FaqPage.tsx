@@ -6,6 +6,7 @@ import { ScrollToTop } from "../components/ScrollToTop";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Carousel } from "@material-tailwind/react";
 
 interface BotMessage {
   id: number;
@@ -75,6 +76,37 @@ export const FaqPage = () => {
   return (
     <>
       <Navbar />
+
+      <section className="relative">
+        <Carousel
+          autoplay={true}
+          loop={true}
+          transition={{ duration: 2 }}
+          className="h-[240px] md:h-[340px] lg:h-[400px]"
+          prevArrow={() => null}
+          nextArrow={() => null}
+          navigation={() => null}
+          placeholder=""
+          onPointerEnterCapture={() => {}}
+          onPointerLeaveCapture={() => {}}
+        >
+          <img
+            src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2560&q=80"
+            alt="FAQ highlight 1"
+            className="h-full w-full object-cover"
+          />
+          <img
+            src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2940&q=80"
+            alt="FAQ highlight 2"
+            className="h-full w-full object-cover"
+          />
+          <img
+            src="https://images.unsplash.com/photo-1518623489648-a173ef7824f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2762&q=80"
+            alt="FAQ highlight 3"
+            className="h-full w-full object-cover"
+          />
+        </Carousel>
+      </section>
 
       <section className="relative overflow-hidden bg-gradient-to-br from-[#F5C147]/10 via-white to-[#B8860B]/10">
         <div className="container py-20 sm:py-28">
