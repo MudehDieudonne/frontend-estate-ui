@@ -11,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { Carousel } from "@material-tailwind/react";
 
 interface BotMessage {
   id: number;
@@ -95,37 +94,8 @@ export const FaqPage = () => {
       <Navbar />
 
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0">
-          <Carousel
-            autoplay={true}
-            loop={true}
-            transition={{ duration: 2 }}
-            className="h-full"
-            prevArrow={() => null}
-            nextArrow={() => null}
-            navigation={() => null}
-            placeholder=""
-            onPointerEnterCapture={() => {}}
-            onPointerLeaveCapture={() => {}}
-          >
-            <img
-              src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2560&q=80"
-              alt="FAQ highlight 1"
-              className="h-full w-full object-cover"
-            />
-            <img
-              src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2940&q=80"
-              alt="FAQ highlight 2"
-              className="h-full w-full object-cover"
-            />
-            <img
-              src="https://images.unsplash.com/photo-1518623489648-a173ef7824f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2762&q=80"
-              alt="FAQ highlight 3"
-              className="h-full w-full object-cover"
-            />
-          </Carousel>
-          <div className="absolute inset-0 bg-white/65 backdrop-blur-sm" />
-        </div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2560&q=80')] bg-cover bg-center" />
+        <div className="absolute inset-0 bg-white/65 backdrop-blur-sm" />
         <div className="container relative py-20 sm:py-28">
           <div className="max-w-3xl">
             <p className="uppercase tracking-[0.2em] text-xs text-muted-foreground">
