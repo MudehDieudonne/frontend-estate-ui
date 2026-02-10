@@ -5,7 +5,12 @@ import { FAQ } from "../components/FAQ";
 import { ScrollToTop } from "../components/ScrollToTop";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 import { Carousel } from "@material-tailwind/react";
 
 interface BotMessage {
@@ -31,7 +36,7 @@ export const FaqPage = () => {
       "What areas do you cover?",
       "How long does a sale take?",
     ],
-    []
+    [],
   );
 
   const getBotReply = (value: string) => {
@@ -43,13 +48,25 @@ export const FaqPage = () => {
     if (text.includes("virtual") || text.includes("tour")) {
       return "Yes. We provide 3D virtual tours and guided video walkthroughs for most premium listings.";
     }
-    if (text.includes("area") || text.includes("location") || text.includes("cover")) {
+    if (
+      text.includes("area") ||
+      text.includes("location") ||
+      text.includes("cover")
+    ) {
       return "We specialize across major Cameroonian cities and high-demand luxury corridors. Tell me your preferred area.";
     }
-    if (text.includes("price") || text.includes("cost") || text.includes("fee")) {
+    if (
+      text.includes("price") ||
+      text.includes("cost") ||
+      text.includes("fee")
+    ) {
       return "Our pricing depends on the service. We will tailor a proposal once we learn your goals.";
     }
-    if (text.includes("time") || text.includes("long") || text.includes("duration")) {
+    if (
+      text.includes("time") ||
+      text.includes("long") ||
+      text.includes("duration")
+    ) {
       return "Timelines vary by market conditions, but our average listing closes 15% faster than the local market.";
     }
 
@@ -107,17 +124,19 @@ export const FaqPage = () => {
               className="h-full w-full object-cover"
             />
           </Carousel>
-          <div className="absolute inset-0 bg-white/85" />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#F5C147]/40 via-white/90 to-[#B8860B]/40" />
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm" />
         </div>
         <div className="container relative py-20 sm:py-28">
           <div className="max-w-3xl">
-            <p className="uppercase tracking-[0.2em] text-xs text-muted-foreground">FAQ</p>
+            <p className="uppercase tracking-[0.2em] text-xs text-muted-foreground">
+              FAQ
+            </p>
             <h1 className="mt-4 text-4xl sm:text-5xl font-bold">
               Answers, Insights, and Support in One Place
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
-              Browse common questions or chat with our IRED assistant for quick guidance.
+              Browse common questions or chat with our IRED assistant for quick
+              guidance.
             </p>
           </div>
         </div>
@@ -130,7 +149,8 @@ export const FaqPage = () => {
           <div>
             <h2 className="text-3xl md:text-4xl font-bold">Ask the IRED Bot</h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Get instant responses or share your situation and we will route it to the right specialist.
+              Get instant responses or share your situation and we will route it
+              to the right specialist.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               {suggestions.map((question) => (
