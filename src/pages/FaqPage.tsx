@@ -95,7 +95,7 @@ export const FaqPage = () => {
 
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2560&q=80')] bg-cover bg-center" />
-        <div className="absolute inset-0 bg-white/65 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-white/65 backdrop-blur-sm dark:bg-black/60" />
         <div className="container relative py-20 sm:py-28">
           <div className="max-w-3xl">
             <p className="uppercase tracking-[0.2em] text-xs text-muted-foreground">
