@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { MagnifierIcon, WalletIcon, ChartIcon } from "./Icons";
@@ -81,8 +82,8 @@ export const Services = () => {
           </div>
 
           <ScrollReveal direction="up" delay={0.6} className="mt-16">
-            <Button size="lg" className="px-12 bg-primary text-white shadow-xl hover:scale-105 transition-transform">
-              Explore All Our Services
+            <Button asChild size="lg" className="px-12 bg-primary text-white shadow-xl hover:scale-105 transition-transform">
+              <Link to="/services">Explore All Our Services</Link>
             </Button>
           </ScrollReveal>
         </div>

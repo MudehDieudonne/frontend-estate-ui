@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import {
@@ -80,8 +81,8 @@ export const Features = () => {
       </div>
 
       <div className="flex justify-center mt-12">
-        <Button variant="outline" size="lg" className="border-primary text-primary hover:bg-primary hover:text-white px-10">
-          Discover All Features
+        <Button asChild variant="outline" size="lg" className="border-primary text-primary hover:bg-primary hover:text-white px-10">
+          <Link to="/services">Discover All Features</Link>
         </Button>
       </div>
     </section>

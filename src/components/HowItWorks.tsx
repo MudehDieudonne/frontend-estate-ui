@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { MedalIcon, MapIcon, PlaneIcon, GiftIcon } from "../components/Icons";
@@ -88,8 +89,8 @@ export const HowItWorks = () => {
         </div>
         <div className="mt-16 flex justify-center">
           <ScrollReveal direction="up" delay={0.8}>
-            <Button size="lg" className="px-10 bg-primary/90 hover:bg-primary shadow-lg border-primary/20 hover:scale-105 transition-all">
-              Start Your Journey Today
+            <Button asChild size="lg" className="px-10 bg-primary/90 hover:bg-primary shadow-lg border-primary/20 hover:scale-105 transition-all">
+              <Link to="/register">Start Your Journey Today</Link>
             </Button>
           </ScrollReveal>
         </div>

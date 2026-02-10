@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { ScrollReveal } from "./ScrollReveal";
 import {
@@ -130,8 +131,8 @@ export const Testimonials = () => {
 
       <ScrollReveal direction="up" delay={0.4}>
         <div className="mt-16 flex justify-center">
-          <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white px-10 rounded-full">
-            Read More Success Stories
+          <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white px-10 rounded-full">
+            <Link to="/faq">Read More Success Stories</Link>
           </Button>
         </div>
       </ScrollReveal>
