@@ -77,39 +77,40 @@ export const FaqPage = () => {
     <>
       <Navbar />
 
-      <section className="relative">
-        <Carousel
-          autoplay={true}
-          loop={true}
-          transition={{ duration: 2 }}
-          className="h-[240px] md:h-[340px] lg:h-[400px]"
-          prevArrow={() => null}
-          nextArrow={() => null}
-          navigation={() => null}
-          placeholder=""
-          onPointerEnterCapture={() => {}}
-          onPointerLeaveCapture={() => {}}
-        >
-          <img
-            src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2560&q=80"
-            alt="FAQ highlight 1"
-            className="h-full w-full object-cover"
-          />
-          <img
-            src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2940&q=80"
-            alt="FAQ highlight 2"
-            className="h-full w-full object-cover"
-          />
-          <img
-            src="https://images.unsplash.com/photo-1518623489648-a173ef7824f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2762&q=80"
-            alt="FAQ highlight 3"
-            className="h-full w-full object-cover"
-          />
-        </Carousel>
-      </section>
-
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#F5C147]/10 via-white to-[#B8860B]/10">
-        <div className="container py-20 sm:py-28">
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0">
+          <Carousel
+            autoplay={true}
+            loop={true}
+            transition={{ duration: 2 }}
+            className="h-full"
+            prevArrow={() => null}
+            nextArrow={() => null}
+            navigation={() => null}
+            placeholder=""
+            onPointerEnterCapture={() => {}}
+            onPointerLeaveCapture={() => {}}
+          >
+            <img
+              src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2560&q=80"
+              alt="FAQ highlight 1"
+              className="h-full w-full object-cover"
+            />
+            <img
+              src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2940&q=80"
+              alt="FAQ highlight 2"
+              className="h-full w-full object-cover"
+            />
+            <img
+              src="https://images.unsplash.com/photo-1518623489648-a173ef7824f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2762&q=80"
+              alt="FAQ highlight 3"
+              className="h-full w-full object-cover"
+            />
+          </Carousel>
+          <div className="absolute inset-0 bg-white/85" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#F5C147]/40 via-white/90 to-[#B8860B]/40" />
+        </div>
+        <div className="container relative py-20 sm:py-28">
           <div className="max-w-3xl">
             <p className="uppercase tracking-[0.2em] text-xs text-muted-foreground">FAQ</p>
             <h1 className="mt-4 text-4xl sm:text-5xl font-bold">

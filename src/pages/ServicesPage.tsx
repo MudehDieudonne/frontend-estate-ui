@@ -6,7 +6,12 @@ import { ScrollToTop } from "../components/ScrollToTop";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 import { Carousel } from "@material-tailwind/react";
 
 interface ServiceInquiryForm {
@@ -29,7 +34,7 @@ export const ServicesPage = () => {
   });
 
   const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -51,7 +56,7 @@ export const ServicesPage = () => {
     ].join("\n");
 
     const mailto = `mailto:mukummudeh@gmail.com?subject=${encodeURIComponent(
-      subject
+      subject,
     )}&body=${encodeURIComponent(body)}`;
 
     window.location.href = mailto;
@@ -96,18 +101,27 @@ export const ServicesPage = () => {
         </div>
         <div className="container relative py-20 sm:py-28">
           <div className="max-w-3xl">
-            <p className="uppercase tracking-[0.2em] text-xs text-white/70">Services</p>
+            <p className="uppercase tracking-[0.2em] text-xs text-white/70">
+              Services
+            </p>
             <h1 className="mt-4 text-4xl sm:text-5xl font-bold">
               Tailored Real Estate Services Built for Your Next Move
             </h1>
             <p className="mt-4 text-lg text-white/80">
-              From luxury sales to strategic investments, our specialists guide you with
-              market intelligence, concierge support, and results-driven execution.
+              From luxury sales to strategic investments, our specialists guide
+              you with market intelligence, concierge support, and
+              results-driven execution.
             </p>
             <div className="mt-8 flex flex-wrap gap-3 text-sm text-white/70">
-              <span className="rounded-full border border-white/20 px-4 py-2">Luxury Sales</span>
-              <span className="rounded-full border border-white/20 px-4 py-2">Investment Strategy</span>
-              <span className="rounded-full border border-white/20 px-4 py-2">Property Management</span>
+              <span className="rounded-full border border-white/20 px-4 py-2">
+                Luxury Sales
+              </span>
+              <span className="rounded-full border border-white/20 px-4 py-2">
+                Investment Strategy
+              </span>
+              <span className="rounded-full border border-white/20 px-4 py-2">
+                Property Management
+              </span>
             </div>
           </div>
         </div>
@@ -122,16 +136,21 @@ export const ServicesPage = () => {
               Connect With Our Service Team
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Share your goals, timelines, and property preferences. We will respond with a
-              tailored plan and a dedicated advisor to guide you through every step.
+              Share your goals, timelines, and property preferences. We will
+              respond with a tailored plan and a dedicated advisor to guide you
+              through every step.
             </p>
             <div className="mt-8 space-y-4">
               <div className="rounded-xl border border-primary/20 bg-muted/40 p-4">
-                <p className="text-sm uppercase tracking-wide text-muted-foreground">Email</p>
+                <p className="text-sm uppercase tracking-wide text-muted-foreground">
+                  Email
+                </p>
                 <p className="font-semibold">mukummudeh@gmail.com</p>
               </div>
               <div className="rounded-xl border border-primary/20 bg-muted/40 p-4">
-                <p className="text-sm uppercase tracking-wide text-muted-foreground">Response Time</p>
+                <p className="text-sm uppercase tracking-wide text-muted-foreground">
+                  Response Time
+                </p>
                 <p className="font-semibold">Within 24 hours (Mon - Sat)</p>
               </div>
             </div>
