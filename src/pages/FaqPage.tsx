@@ -124,7 +124,7 @@ export const FaqPage = () => {
               className="h-full w-full object-cover"
             />
           </Carousel>
-          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-white/65 backdrop-blur-sm" />
         </div>
         <div className="container relative py-20 sm:py-28">
           <div className="max-w-3xl">
