@@ -1,8 +1,8 @@
 import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -10,7 +10,6 @@ import {
 interface FeatureProps {
   title: string;
   description: string;
-  image: string;
 }
 
 const features: FeatureProps[] = [
@@ -18,19 +17,16 @@ const features: FeatureProps[] = [
     title: "Virtual Tours",
     description:
       "Experience properties from the comfort of your home with our immersive 3D virtual tours and high-definition video walkthroughs.",
-    image: "https://images.unsplash.com/photo-1626178793926-22b28830aa30?q=80&w=2070&auto=format&fit=crop",
   },
   {
     title: "Expert Market Analysis",
     description:
       "Gain a competitive edge with our real-time data and expert insights into local property trends, ensuring you make informed decisions.",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop",
   },
   {
     title: "Seamless Legal Guidance",
     description:
       "Navigate complex real estate transactions with confidence. our legal partners provide comprehensive support for every step of the process.",
-    image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=2070&auto=format&fit=crop",
   },
 ];
 
@@ -73,23 +69,20 @@ export const Features = () => {
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {features.map(({ title, description, image }: FeatureProps) => (
-          <Card key={title}>
+        {features.map(({ title, description }: { title: string, description: string }) => (
+          <Card key={title} className="bg-muted/30 border-primary/10">
             <CardHeader>
               <CardTitle>{title}</CardTitle>
             </CardHeader>
-
             <CardContent>{description}</CardContent>
-
-            <CardFooter>
-              <img
-                src={image}
-                alt="About feature"
-                className="w-[200px] lg:w-[300px] mx-auto"
-              />
-            </CardFooter>
           </Card>
         ))}
+      </div>
+
+      <div className="flex justify-center mt-12">
+        <Button variant="outline" size="lg" className="border-primary text-primary hover:bg-primary hover:text-white px-10">
+          Discover All Features
+        </Button>
       </div>
     </section>
   );

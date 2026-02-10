@@ -25,7 +25,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "./ui/button";
 import { Menu } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
-import { LogoIcon } from "./Icons";
+import logo from "../assets/Copilot_20260210_193854.png";
 
 interface RouteProps {
   href: string;
@@ -66,10 +66,17 @@ export const Navbar = () => {
           <NavigationMenuItem className="font-bold flex">
             <Link
               to="/"
-              className="ml-2 font-bold text-xl flex"
+              className="ml-2 font-bold text-xl flex items-center gap-2"
             >
-              <LogoIcon />
-              IRED
+              <img
+                src={logo}
+                alt="IRED Logo"
+                className="h-10 w-auto object-contain"
+                style={{ minWidth: "40px" }}
+              />
+              <span className="bg-gradient-to-r from-[#B8860B] to-[#F5C147] text-transparent bg-clip-text">
+                IRED
+              </span>
             </Link>
           </NavigationMenuItem>
 
