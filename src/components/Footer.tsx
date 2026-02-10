@@ -14,8 +14,7 @@ export const Footer = () => {
               href="/"
               className="font-bold text-xl flex items-center gap-2"
             >
-              <img src={logo} alt="IRED Logo" className="h-8 w-auto" />
-              IRED (Iforty Real Estate Development)
+              <img src={logo} alt="IRED Logo" className="h-40 w-50" />
             </a>
           </ScrollReveal>
         </div>

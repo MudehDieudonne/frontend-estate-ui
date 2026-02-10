@@ -97,7 +97,7 @@ export const ServicesPage = () => {
             />
           </Carousel>
           <div className="absolute inset-0 bg-[#0B1120]/85" />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#0F172A] via-[#1F2937] to-[#0B1120] opacity-90" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0F172A] via-[#1F2937] to-[#0B1120] opacity-60" />
         </div>
         <div className="container relative py-20 sm:py-28">
           <div className="max-w-3xl">
