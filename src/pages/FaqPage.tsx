@@ -153,9 +153,7 @@ export const FaqPage = () => {
                           ? "bg-primary text-white"
                           : "bg-white border border-primary/10"
                       }`}
-                    >
-                      {message.text}
-                    </div>
+                    ></div>
                   </div>
                 ))}
               </div>
