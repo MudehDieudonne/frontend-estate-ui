@@ -9,8 +9,8 @@ import { ChatPage } from "./pages/ChatPage";
 import { CreateListingPage } from "./pages/CreateListingPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { ComingSoon } from "./pages/ComingSoon";
-import { FAQPage } from "./pages/FAQPage";
 import { ServicesPage } from "./pages/ServicesPage";
+import { FaqPage } from "./pages/FaqPage";
 import { useAuth } from "./context/AuthContext";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import "./App.css";
@@ -49,7 +49,7 @@ function App() {
       <Route path="/hotels" element={<ComingSoon title="Hotels" />} />
       <Route path="/guest-houses" element={<ComingSoon title="Guest Houses" />} />
       <Route path="/services" element={<ServicesPage />} />
-      <Route path="/faq" element={<FAQPage />} />
+      <Route path="/faq" element={<FaqPage />} />
 
       <Route path="/settings" element={
         <ProtectedRoute>
