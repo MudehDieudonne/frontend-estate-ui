@@ -41,6 +41,7 @@ export const FloatingChat = () => {
     const [loadingChats, setLoadingChats] = useState(false);
     const [loadingMessages, setLoadingMessages] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
+    const unreadCount = chats.filter((chat) => !chat.seenBy.includes(user?.id || "")).length;
 
     // Fetch chats when opened or when selectedChatId changes
     const fetchChats = useCallback(async () => {
@@ -58,10 +59,11 @@ export const FloatingChat = () => {
                 } else {
                     // Create new chat if it doesn't exist
                     const newChatRes = await api.post("/chats", { receiverId: selectedChatId });
-                    setSelectedChat(newChatRes.data);
                     // Refresh chat list to include the new chat
                     const refreshRes = await api.get("/chats");
                     setChats(refreshRes.data);
+                    const createdChat = refreshRes.data.find((c: Chat) => c.id === newChatRes.data.id);
+                    if (createdChat) setSelectedChat(createdChat);
                 }
                 // Clear the context selectedChatId so we don't keep trying to create it
                 setSelectedChatId(null);
@@ -88,6 +90,11 @@ export const FloatingChat = () => {
                     const response = await api.get(`/messages/${selectedChat.id}`);
                     setMessages(response.data);
                     await api.put(`/chats/${selectedChat.id}`);
+                    setChats((prev) =>
+                        prev.map((c) =>
+                            c.id === selectedChat.id ? { ...c, seenBy: Array.from(new Set([...(c.seenBy || []), user?.id || ""])) } : c
+                        )
+                    );
                 } catch (err) {
                     console.error("Failed to fetch messages:", err);
                 } finally {
@@ -111,6 +118,14 @@ export const FloatingChat = () => {
                         : c
                 )
             );
+
+            if (data.userId !== user?.id && (document.hidden || !isOpen) && "Notification" in window) {
+                if (Notification.permission === "granted") {
+                    new Notification("New message", { body: data.text });
+                } else if (Notification.permission === "default") {
+                    Notification.requestPermission().catch(() => undefined);
+                }
+            }
         };
 
         if (socket) {
@@ -120,7 +135,7 @@ export const FloatingChat = () => {
         return () => {
             socket?.off("getMessage", handleMessage);
         };
-    }, [socket, selectedChat]);
+    }, [socket, selectedChat, user?.id, isOpen]);
 
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -333,18 +348,30 @@ export const FloatingChat = () => {
                             <MessageSquare className="h-5 w-5" />
                             <span className="font-bold">Messaging</span>
                         </div>
-                        <ChevronUp className="h-4 w-4" />
+                        <div className="flex items-center gap-2">
+                            {unreadCount > 0 && (
+                                <span className="h-5 min-w-5 rounded-full bg-red-500 px-1.5 text-[10px] leading-5 font-bold text-white">
+                                    {unreadCount}
+                                </span>
+                            )}
+                            <ChevronUp className="h-4 w-4" />
+                        </div>
                     </Button>
 
                     {/* Mobile Circular Icon */}
                     <Button
-                        className="sm:hidden rounded-full h-14 w-14 shadow-2xl flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/95 mb-4 mr-2"
+                        className="sm:hidden relative rounded-full h-14 w-14 shadow-2xl flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/95 mb-4 mr-2"
                         onClick={() => {
                             setIsOpen(true);
                             setIsMinimized(false);
                         }}
                     >
                         <MessageSquare className="h-6 w-6" />
+                        {unreadCount > 0 && (
+                            <span className="absolute -top-1 -right-1 h-5 min-w-5 rounded-full bg-red-500 px-1.5 text-[10px] leading-5 font-bold text-white">
+                                {unreadCount}
+                            </span>
+                        )}
                     </Button>
                 </>
             )}

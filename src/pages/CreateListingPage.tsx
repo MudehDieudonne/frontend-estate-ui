@@ -57,9 +57,19 @@ export const CreateListingPage = () => {
     const [property, setProperty] = useState("apartment");
     const [parlor, setParlor] = useState("1");
     const [size, setSize] = useState("");
+    const [parkingLots, setParkingLots] = useState("");
+    const [hasSwimmingPool, setHasSwimmingPool] = useState(false);
+    const [hasGym, setHasGym] = useState(false);
+    const [hasSecurity, setHasSecurity] = useState(false);
+    const [utilities, setUtilities] = useState("");
+    const [pet, setPet] = useState("");
+    const [income, setIncome] = useState("");
+    const [furnished, setFurnished] = useState("");
     const [school, setSchool] = useState("");
     const [bus, setBus] = useState("");
     const [restaurant, setRestaurant] = useState("");
+    const [hospital, setHospital] = useState("");
+    const [market, setMarket] = useState("");
     const [images, setImages] = useState<string[]>([]);
     const [position, setPosition] = useState<L.LatLng | null>(new L.LatLng(3.848, 11.5021)); // Default to Yaoundé
     const [uploading, setUploading] = useState(false);
@@ -95,6 +105,12 @@ export const CreateListingPage = () => {
         setImages(images.filter((_, i) => i !== index));
     };
 
+    const parseOptionalNumber = (value: string) => {
+        if (!value.trim()) return undefined;
+        const parsed = Number(value);
+        return Number.isFinite(parsed) ? parsed : undefined;
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
@@ -125,11 +141,22 @@ export const CreateListingPage = () => {
                 latitude: position.lat,
                 longitude: position.lng,
                 postDetail: {
-                    size: Number(size),
-                    parlor: Number(parlor),
-                    school: Number(school),
-                    bus: Number(bus),
-                    restaurant: Number(restaurant),
+                    desc: description,
+                    utilities: utilities || undefined,
+                    pet: pet || undefined,
+                    income: income || undefined,
+                    furnished: furnished || undefined,
+                    size: parseOptionalNumber(size),
+                    parlor: parseOptionalNumber(parlor),
+                    parkingLots: parseOptionalNumber(parkingLots),
+                    hasSwimmingPool,
+                    hasGym,
+                    hasSecurity,
+                    school: parseOptionalNumber(school),
+                    bus: parseOptionalNumber(bus),
+                    restaurant: parseOptionalNumber(restaurant),
+                    hospital: parseOptionalNumber(hospital),
+                    market: parseOptionalNumber(market),
                 }
             };
 
@@ -275,7 +302,82 @@ export const CreateListingPage = () => {
                                     />
                                 </div>
                             </div>
-                            <div className="grid grid-cols-3 gap-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="parkingLots">Parking Lots</Label>
+                                    <Input
+                                        id="parkingLots"
+                                        type="number"
+                                        value={parkingLots}
+                                        onChange={(e) => setParkingLots(e.target.value)}
+                                        min="0"
+                                        placeholder="e.g. 2"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Furnished</Label>
+                                    <Select value={furnished} onValueChange={setFurnished}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select furnished state" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="fully">Fully Furnished</SelectItem>
+                                            <SelectItem value="semi">Semi Furnished</SelectItem>
+                                            <SelectItem value="no">Not Furnished</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Utilities Responsibility</Label>
+                                    <Select value={utilities} onValueChange={setUtilities}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select utility responsibility" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="owner">Owner is responsible</SelectItem>
+                                            <SelectItem value="tenant">Tenant is responsible</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Pet Policy</Label>
+                                    <Select value={pet} onValueChange={setPet}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select pet policy" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="allowed">Pets Allowed</SelectItem>
+                                            <SelectItem value="not-allowed">Pets Not Allowed</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="income">Income Requirement (optional)</Label>
+                                <Input
+                                    id="income"
+                                    placeholder="e.g. 3x monthly rent"
+                                    value={income}
+                                    onChange={(e) => setIncome(e.target.value)}
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <label className="flex items-center gap-2 text-sm font-medium">
+                                    <input type="checkbox" checked={hasSwimmingPool} onChange={(e) => setHasSwimmingPool(e.target.checked)} />
+                                    Swimming Pool
+                                </label>
+                                <label className="flex items-center gap-2 text-sm font-medium">
+                                    <input type="checkbox" checked={hasGym} onChange={(e) => setHasGym(e.target.checked)} />
+                                    Gym
+                                </label>
+                                <label className="flex items-center gap-2 text-sm font-medium">
+                                    <input type="checkbox" checked={hasSecurity} onChange={(e) => setHasSecurity(e.target.checked)} />
+                                    Security
+                                </label>
+                            </div>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="school">Nearby School (m)</Label>
                                     <Input
@@ -304,6 +406,26 @@ export const CreateListingPage = () => {
                                         value={restaurant}
                                         onChange={(e) => setRestaurant(e.target.value)}
                                         placeholder="e.g. 300"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="hospital">Hospital (m)</Label>
+                                    <Input
+                                        id="hospital"
+                                        type="number"
+                                        value={hospital}
+                                        onChange={(e) => setHospital(e.target.value)}
+                                        placeholder="e.g. 450"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="market">Market (m)</Label>
+                                    <Input
+                                        id="market"
+                                        type="number"
+                                        value={market}
+                                        onChange={(e) => setMarket(e.target.value)}
+                                        placeholder="e.g. 350"
                                     />
                                 </div>
                             </div>
@@ -452,5 +574,4 @@ export const CreateListingPage = () => {
         </FeedLayout>
     );
 };
-
 

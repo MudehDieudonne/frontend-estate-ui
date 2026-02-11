@@ -31,10 +31,17 @@ export interface PostDetailData {
     utilities?: string;
     pet?: string;
     income?: string;
+    furnished?: string;
     size?: number;
+    parkingLots?: number;
+    hasSwimmingPool?: boolean;
+    hasGym?: boolean;
+    hasSecurity?: boolean;
     school?: number;
     bus?: number;
     restaurant?: number;
+    hospital?: number;
+    market?: number;
     parlor?: number;
 }
 
@@ -87,6 +94,10 @@ export const PropertyDetailsPage = () => {
 
     const handleSave = async () => {
         if (!post) return;
+        if (!user) {
+            navigate("/login");
+            return;
+        }
         try {
             await api.post("/users/save", { postId: post.id });
             setPost({ ...post, isSaved: !post.isSaved });
@@ -101,6 +112,25 @@ export const PropertyDetailsPage = () => {
             return;
         }
         openChatWith(post.userId);
+    };
+
+    const handleShare = async () => {
+        if (!post) return;
+        const url = `${window.location.origin}/property/${post.id}`;
+        try {
+            if (navigator.share) {
+                await navigator.share({
+                    title: post.title,
+                    text: post.postDetail?.desc || post.title,
+                    url,
+                });
+                return;
+            }
+            await navigator.clipboard.writeText(url);
+            alert("Property link copied to clipboard.");
+        } catch (err) {
+            console.error("Failed to share property:", err);
+        }
     };
 
     if (loading) {
@@ -156,7 +186,12 @@ export const PropertyDetailsPage = () => {
                                     >
                                         <Heart className={`h-5 w-5 ${post.isSaved ? "fill-primary" : ""}`} />
                                     </Button>
-                                    <Button variant="secondary" size="icon" className="rounded-full bg-background/80 backdrop-blur-sm shadow-md hover:bg-background">
+                                    <Button
+                                        variant="secondary"
+                                        size="icon"
+                                        className="rounded-full bg-background/80 backdrop-blur-sm shadow-md hover:bg-background"
+                                        onClick={handleShare}
+                                    >
                                         <Share2 className="h-5 w-5" />
                                     </Button>
                                 </div>
@@ -185,14 +220,13 @@ export const PropertyDetailsPage = () => {
                                     </div>
                                     <div className="flex justify-between items-end gap-4">
                                         <div className="space-y-1">
-                                            <h1 className="text-4xl font-black text-primary tracking-tight leading-tight">{post.title}</h1>
+                                            <h1 className="text-2xl sm:text-4xl font-black text-primary tracking-tight leading-tight">{post.title}</h1>
                                             <p className="text-muted-foreground flex items-center text-lg">
                                                 <MapPin className="h-5 w-5 mr-1 text-primary" /> {post.address}, {post.city}
                                             </p>
                                         </div>
                                         <div className="text-right flex flex-col items-end">
-                                            <p className="text-4xl font-black text-primary">{post.price.toLocaleString()} FCFA {post.type === 'rent' ? '/mo' : ''}</p>
-                                            <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mt-1">Property ID: {post.id.slice(-8).toUpperCase()}</p>
+                                            <p className="text-2xl sm:text-4xl font-black text-primary">{post.price.toLocaleString()} FCFA {post.type === 'rent' ? '/mo' : ''}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -217,7 +251,7 @@ export const PropertyDetailsPage = () => {
                                             <Sofa className="h-5 w-5" />
                                         </div>
                                         <span className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground">Parlors</span>
-                                        <span className="text-sm font-bold">{post.postDetail?.parlor || "1"}</span>
+                                        <span className="text-sm font-bold">{post.postDetail?.parlor ?? "Contact agent"}</span>
                                     </div>
                                     <div className="flex flex-col items-center gap-2">
                                         <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
@@ -233,6 +267,13 @@ export const PropertyDetailsPage = () => {
                                         <span className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground">Listed</span>
                                         <span className="text-sm font-bold">{new Date(post.createdAt).toLocaleDateString()}</span>
                                     </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-2">
+                                    <Badge variant="outline">Parking: {post.postDetail?.parkingLots ?? "Contact agent"}</Badge>
+                                    <Badge variant="outline">Pool: {post.postDetail?.hasSwimmingPool ? "Yes" : "No / Contact agent"}</Badge>
+                                    <Badge variant="outline">Gym: {post.postDetail?.hasGym ? "Yes" : "No / Contact agent"}</Badge>
+                                    <Badge variant="outline">Security: {post.postDetail?.hasSecurity ? "Yes" : "No / Contact agent"}</Badge>
                                 </div>
 
                                 <div className="space-y-4">
@@ -298,7 +339,13 @@ export const PropertyDetailsPage = () => {
                                         </div>
                                         <div>
                                             <p className="text-xs text-muted-foreground uppercase font-bold tracking-tighter">Utilities</p>
-                                            <p className="text-sm font-bold">{post.postDetail?.utilities === "owner" ? "Owner is responsible" : "Tenant is responsible"}</p>
+                                            <p className="text-sm font-bold">
+                                                {post.postDetail?.utilities === "owner"
+                                                    ? "Owner is responsible"
+                                                    : post.postDetail?.utilities === "tenant"
+                                                        ? "Tenant is responsible"
+                                                        : "Contact agent"}
+                                            </p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
@@ -307,7 +354,13 @@ export const PropertyDetailsPage = () => {
                                         </div>
                                         <div>
                                             <p className="text-xs text-muted-foreground uppercase font-bold tracking-tighter">Pet Policy</p>
-                                            <p className="text-sm font-bold">{post.postDetail?.pet === "allowed" ? "Pets Allowed" : "Pets Not Allowed"}</p>
+                                            <p className="text-sm font-bold">
+                                                {post.postDetail?.pet === "allowed"
+                                                    ? "Pets Allowed"
+                                                    : post.postDetail?.pet === "not-allowed"
+                                                        ? "Pets Not Allowed"
+                                                        : "Contact agent"}
+                                            </p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
@@ -317,6 +370,23 @@ export const PropertyDetailsPage = () => {
                                         <div>
                                             <p className="text-xs text-muted-foreground uppercase font-bold tracking-tighter">Income Requirement</p>
                                             <p className="text-sm font-bold tracking-tight">{post.postDetail?.income || "Contact agent"}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 bg-primary/10 rounded flex items-center justify-center text-primary">
+                                            <Sofa className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-muted-foreground uppercase font-bold tracking-tighter">Furnished</p>
+                                            <p className="text-sm font-bold tracking-tight">
+                                                {post.postDetail?.furnished === "fully"
+                                                    ? "Fully Furnished"
+                                                    : post.postDetail?.furnished === "semi"
+                                                        ? "Semi Furnished"
+                                                        : post.postDetail?.furnished === "no"
+                                                            ? "Not Furnished"
+                                                            : "Contact agent"}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -349,6 +419,20 @@ export const PropertyDetailsPage = () => {
                                         </div>
                                         <Badge variant="secondary" className="font-bold">{post.postDetail?.restaurant ? `${post.postDetail.restaurant}m away` : "Contact agent"}</Badge>
                                     </div>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <GraduationCap className="h-5 w-5 text-primary" />
+                                            <span className="text-sm font-bold">Hospital</span>
+                                        </div>
+                                        <Badge variant="secondary" className="font-bold">{post.postDetail?.hospital ? `${post.postDetail.hospital}m away` : "Contact agent"}</Badge>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <Bus className="h-5 w-5 text-primary" />
+                                            <span className="text-sm font-bold">Market</span>
+                                        </div>
+                                        <Badge variant="secondary" className="font-bold">{post.postDetail?.market ? `${post.postDetail.market}m away` : "Contact agent"}</Badge>
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
@@ -358,5 +442,4 @@ export const PropertyDetailsPage = () => {
         </FeedLayout>
     );
 };
-
 
