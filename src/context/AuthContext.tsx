@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import api from "../lib/api";
 
 interface User {
     id: string;
@@ -10,7 +11,7 @@ interface User {
 interface AuthContextType {
     user: User | null;
     login: (userData: User) => void;
-    logout: () => void;
+    logout: () => Promise<void>;
     updateUser: (userData: User) => void;
     isLoading: boolean;
 }
@@ -22,14 +23,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const savedUser = localStorage.getItem("user");
         return savedUser ? JSON.parse(savedUser) : null;
     });
-    const [isLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const bootstrapAuth = async () => {
+            try {
+                const response = await api.get("/auth/me");
+                setUser(response.data);
+                localStorage.setItem("user", JSON.stringify(response.data));
+            } catch (err) {
+                setUser(null);
+                localStorage.removeItem("user");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        bootstrapAuth();
+    }, []);
 
     const login = (userData: User) => {
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
     };
 
-    const logout = () => {
+    const logout = async () => {
+        try {
+            await api.post("/auth/logout");
+        } catch (err) {
+            // Even if the request fails, clear client auth state.
+        }
         setUser(null);
         localStorage.removeItem("user");
     };
