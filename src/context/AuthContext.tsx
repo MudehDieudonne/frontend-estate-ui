@@ -6,6 +6,8 @@ interface User {
     username: string;
     email: string;
     avatar?: string;
+    emailVerified?: boolean;
+    authProvider?: "local" | "google" | "facebook" | "linkedin";
 }
 
 interface AuthContextType {

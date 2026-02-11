@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
+import { VerifyEmailPage } from "./pages/VerifyEmailPage";
 import { FeedPage } from "./pages/FeedPage";
 import { PropertyDetailsPage } from "./pages/PropertyDetailsPage";
 import { ProfilePage } from "./pages/ProfilePage";
@@ -23,6 +24,7 @@ function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={user ? <Navigate to="/feed" /> : <LoginPage />} />
       <Route path="/register" element={user ? <Navigate to="/feed" /> : <RegisterPage />} />
+      <Route path="/verify-email" element={user ? <Navigate to="/feed" /> : <VerifyEmailPage />} />
 
       <Route path="/feed" element={<FeedPage />} />
 
