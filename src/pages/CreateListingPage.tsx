@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -42,8 +43,15 @@ function LocationMarker({ position, setPosition }: { position: L.LatLng | null, 
 
 export const CreateListingPage = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    useEffect(() => {
+        if (user && !user.isApproved && user.role === "USER") {
+            navigate("/request-approval", { state: { from: "create-listing" } });
+        }
+    }, [user, navigate]);
 
     // Form state
     const [title, setTitle] = useState("");

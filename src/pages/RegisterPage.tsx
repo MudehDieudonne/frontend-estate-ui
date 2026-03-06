@@ -5,11 +5,6 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../components/ui/card";
 
-const providerLabels: Record<string, string> = {
-  google: "Google",
-  facebook: "Facebook",
-  linkedin: "LinkedIn",
-};
 
 export const RegisterPage = () => {
   const [username, setUsername] = useState("");
@@ -19,10 +14,6 @@ export const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const getSocialStartUrl = (provider: "google" | "facebook" | "linkedin") => {
-    const baseUrl = String(import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
-    return `${baseUrl}/auth/oauth/${provider}/start`;
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +41,7 @@ export const RegisterPage = () => {
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center text-primary">Join IRED</CardTitle>
           <CardDescription className="text-center">
-            Create an account with email OTP verification or continue with social login.
+            Create an account with email OTP verification.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
@@ -97,15 +88,6 @@ export const RegisterPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-            </div>
-            <div className="space-y-2">
-              {(["google", "facebook", "linkedin"] as const).map((provider) => (
-                <a key={provider} href={getSocialStartUrl(provider)} className="block">
-                  <Button type="button" variant="outline" className="w-full">
-                    Continue with {providerLabels[provider]}
-                  </Button>
-                </a>
-              ))}
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">

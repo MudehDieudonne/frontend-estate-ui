@@ -7,7 +7,9 @@ interface User {
     email: string;
     avatar?: string;
     emailVerified?: boolean;
-    authProvider?: "local" | "google" | "facebook" | "linkedin";
+    authProvider?: "local" | "facebook" | "linkedin";
+    role: "USER" | "ADMIN" | "SUPREME_ADMIN";
+    isApproved: boolean;
 }
 
 interface AuthContextType {

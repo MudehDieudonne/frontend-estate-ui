@@ -13,11 +13,6 @@ import {
   CardFooter,
 } from "../components/ui/card";
 
-const providerLabels: Record<string, string> = {
-  google: "Google",
-  facebook: "Facebook",
-  linkedin: "LinkedIn",
-};
 
 const socialErrorText: Record<string, string> = {
   invalid_state: "Social login session expired. Please try again.",
@@ -45,10 +40,6 @@ export const LoginPage = () => {
     return socialErrorText[code] || "";
   }, [location.search]);
 
-  const getSocialStartUrl = (provider: "google" | "facebook" | "linkedin") => {
-    const baseUrl = String(import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
-    return `${baseUrl}/auth/oauth/${provider}/start`;
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,7 +70,7 @@ export const LoginPage = () => {
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center text-primary">Login to IRED</CardTitle>
           <CardDescription className="text-center">
-            Enter your credentials or continue with social login.
+            Enter your credentials to access your account.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
@@ -123,15 +114,6 @@ export const LoginPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-            </div>
-            <div className="space-y-2">
-              {(["google", "facebook", "linkedin"] as const).map((provider) => (
-                <a key={provider} href={getSocialStartUrl(provider)} className="block">
-                  <Button type="button" variant="outline" className="w-full">
-                    Continue with {providerLabels[provider]}
-                  </Button>
-                </a>
-              ))}
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">

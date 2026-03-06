@@ -12,6 +12,8 @@ import { SettingsPage } from "./pages/SettingsPage";
 import { ComingSoon } from "./pages/ComingSoon";
 import { ServicesPage } from "./pages/ServicesPage";
 import { FaqPage } from "./pages/FaqPage";
+import { RequestApprovalPage } from "./pages/RequestApprovalPage";
+import { AdminDashboardPage } from "./pages/AdminDashboardPage";
 import { useAuth } from "./context/AuthContext";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import "./App.css";
@@ -56,6 +58,18 @@ function App() {
       <Route path="/settings" element={
         <ProtectedRoute>
           <SettingsPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/request-approval" element={
+        <ProtectedRoute>
+          <RequestApprovalPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin-dashboard" element={
+        <ProtectedRoute>
+          <AdminDashboardPage />
         </ProtectedRoute>
       } />
 

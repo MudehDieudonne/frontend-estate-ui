@@ -224,6 +224,16 @@ export const Navbar = () => {
                   <DropdownMenuItem asChild>
                     <Link to="/profile">Profile</Link>
                   </DropdownMenuItem>
+                  {user && !user.isApproved && user.role === "USER" && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/request-approval" className="text-amber-600 font-medium">Request Approval</Link>
+                    </DropdownMenuItem>
+                  )}
+                  {(user.role === "ADMIN" || user.role === "SUPREME_ADMIN") && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin-dashboard" className="text-primary font-bold">Admin Dashboard</Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => logout()}>
                     Log out
