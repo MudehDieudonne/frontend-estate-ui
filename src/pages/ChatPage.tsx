@@ -43,7 +43,7 @@ export const ChatPage = () => {
         const fetchChats = async () => {
             try {
                 const response = await api.get("/chats");
-                setChats(response.data);
+                setChats(Array.isArray(response.data) ? response.data : []);
             } catch (err) {
                 console.error("Failed to fetch chats:", err);
             } finally {
@@ -155,7 +155,7 @@ export const ChatPage = () => {
                                 >
                                     <Avatar>
                                         <AvatarImage src={chat.receiver.avatar} />
-                                        <AvatarFallback>{chat.receiver.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                        <AvatarFallback>{(chat.receiver.username || "U").substring(0, 2).toUpperCase()}</AvatarFallback>
                                     </Avatar>
                                     <div className="flex-1 overflow-hidden">
                                         <div className="flex justify-between items-center">
@@ -186,7 +186,7 @@ export const ChatPage = () => {
                             <div className="p-4 border-b-[1px] border-primary/10 flex items-center gap-3 bg-background">
                                 <Avatar className="h-8 w-8">
                                     <AvatarImage src={selectedChat.receiver.avatar} />
-                                    <AvatarFallback>{selectedChat.receiver.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                    <AvatarFallback>{(selectedChat.receiver.username || "U").substring(0, 2).toUpperCase()}</AvatarFallback>
                                 </Avatar>
                                 <div>
                                     <p className="font-bold text-sm">{selectedChat.receiver.username}</p>

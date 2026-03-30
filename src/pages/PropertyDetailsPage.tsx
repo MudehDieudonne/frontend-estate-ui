@@ -309,7 +309,7 @@ export const PropertyDetailsPage = () => {
                             <CardContent className="p-6 text-center">
                                 <Avatar className="h-20 w-20 mx-auto border-4 border-primary/20 shadow-md">
                                     <AvatarImage src={post.user.avatar} />
-                                    <AvatarFallback className="text-2xl">{post.user.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                    <AvatarFallback className="text-2xl">{(post.user.username || "U").substring(0, 2).toUpperCase()}</AvatarFallback>
                                 </Avatar>
                                 <h3 className="mt-4 text-xl font-bold">{post.user.username}</h3>
                                 <p className="text-sm text-muted-foreground mb-6">Verified Listing Agent</p>

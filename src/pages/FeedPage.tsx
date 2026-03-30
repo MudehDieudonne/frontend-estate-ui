@@ -28,7 +28,10 @@ export const FeedPage = () => {
             try {
                 const query = new URLSearchParams(searchParams).toString();
                 const response = await api.get(`/posts?${query}`);
-                setPosts(response.data);
+                // Ensure the data is an array
+                const data = Array.isArray(response.data) ? response.data :
+                    (response.data && Array.isArray(response.data.posts) ? response.data.posts : []);
+                setPosts(data);
             } catch (err) {
                 console.error("Failed to fetch posts:", err);
             } finally {
@@ -48,7 +51,7 @@ export const FeedPage = () => {
             <CardHeader className="p-4 -mt-10 flex flex-col items-center">
                 <Avatar className="h-16 w-16 border-2 border-background">
                     <AvatarImage src={user?.avatar} />
-                    <AvatarFallback>{user?.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+                    <AvatarFallback>{(user?.username || "U").substring(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <h3 className="mt-2 font-bold text-lg">{user?.username}</h3>
                 <p className="text-xs text-muted-foreground">{user?.email}</p>

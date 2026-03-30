@@ -194,7 +194,7 @@ export const FloatingChat = () => {
                                     <Avatar className="h-6 w-6 border border-primary-foreground/20">
                                         <AvatarImage src={selectedChat.receiver.avatar} />
                                         <AvatarFallback className="text-[10px] bg-primary-foreground text-primary">
-                                            {selectedChat.receiver.username.substring(0, 2).toUpperCase()}
+                                            {(selectedChat.receiver.username || "U").substring(0, 2).toUpperCase()}
                                         </AvatarFallback>
                                     </Avatar>
                                     <span className="text-sm font-bold truncate max-w-[120px]">
@@ -303,7 +303,7 @@ export const FloatingChat = () => {
                                                     <Avatar className="h-8 w-8">
                                                         <AvatarImage src={chat.receiver.avatar} />
                                                         <AvatarFallback className="text-[10px]">
-                                                            {chat.receiver.username.substring(0, 2).toUpperCase()}
+                                                            {(chat.receiver.username || "U").substring(0, 2).toUpperCase()}
                                                         </AvatarFallback>
                                                     </Avatar>
                                                     <div className="flex-1 overflow-hidden">

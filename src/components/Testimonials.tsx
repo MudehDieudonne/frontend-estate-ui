@@ -94,7 +94,7 @@ export const Testimonials = () => {
                 <CardHeader className="flex flex-row items-center gap-4 pb-2">
                   <Avatar>
                     <AvatarImage alt={name} src={image} />
-                    <AvatarFallback>{name.substring(0, 2).toUpperCase()}</AvatarFallback>
+                    <AvatarFallback>{(name || "U").substring(0, 2).toUpperCase()}</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
                     <CardTitle className="text-lg">{name}</CardTitle>
@@ -116,7 +116,7 @@ export const Testimonials = () => {
               <CardHeader className="flex flex-row items-center gap-4 pb-2">
                 <Avatar>
                   <AvatarImage alt={name} src={image} />
-                  <AvatarFallback>{name.substring(0, 2).toUpperCase()}</AvatarFallback>
+                  <AvatarFallback>{(name || "U").substring(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
                   <CardTitle className="text-lg">{name}</CardTitle>

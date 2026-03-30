@@ -5,9 +5,11 @@ interface User {
     id: string;
     username: string;
     email: string;
+    phone?: string;
     avatar?: string;
     emailVerified?: boolean;
-    authProvider?: "local" | "facebook" | "linkedin";
+    phoneVerified?: boolean;
+    authProvider?: "local" | "google" | "facebook" | "linkedin";
     role: "USER" | "ADMIN" | "SUPREME_ADMIN";
     isApproved: boolean;
 }
@@ -24,8 +26,18 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(() => {
-        const savedUser = localStorage.getItem("user");
-        return savedUser ? JSON.parse(savedUser) : null;
+        try {
+            const savedUser = localStorage.getItem("user");
+            if (!savedUser) return null;
+            const parsed = JSON.parse(savedUser);
+            // Ensure we have at least an id or username to consider it a valid user session
+            if (parsed && (parsed.id || parsed.username)) {
+                return parsed;
+            }
+            return null;
+        } catch (e) {
+            return null;
+        }
     });
     const [isLoading, setIsLoading] = useState(true);
 

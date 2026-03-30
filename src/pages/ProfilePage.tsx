@@ -25,8 +25,8 @@ export const ProfilePage = () => {
         const fetchProfileData = async () => {
             try {
                 const res = await api.get("/users/profilePosts");
-                setUserPosts(res.data.userPosts);
-                setSavedPosts(res.data.savedPosts);
+                setUserPosts(Array.isArray(res.data?.userPosts) ? res.data.userPosts : []);
+                setSavedPosts(Array.isArray(res.data?.savedPosts) ? res.data.savedPosts : []);
             } catch (err) {
                 console.error("Failed to fetch profile data", err);
             } finally {
@@ -86,7 +86,7 @@ export const ProfilePage = () => {
                         <div className="relative group">
                             <Avatar className="h-32 w-32 border-4 border-background shadow-xl">
                                 <AvatarImage src={user?.avatar} />
-                                <AvatarFallback className="text-3xl">{user?.username?.substring(0, 2).toUpperCase() || "??"}</AvatarFallback>
+                                <AvatarFallback className="text-3xl">{(user?.username || "U").substring(0, 2).toUpperCase()}</AvatarFallback>
                             </Avatar>
                             <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity overflow-hidden">
                                 <label className="flex-1 h-full flex items-center justify-center hover:bg-white/20 transition-colors cursor-pointer border-r border-white/20" title="Upload Image">

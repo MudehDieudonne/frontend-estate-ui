@@ -41,8 +41,8 @@ export const AdminDashboardPage = () => {
                     api.get("/admin/stats"),
                     api.get("/admin/requests")
                 ]);
-                setStats(statsRes.data);
-                setRequests(requestsRes.data);
+                setStats(statsRes.data || { stats: { userCount: 0, postCount: 0, pendingRequestCount: 0 }, recentPosts: [] });
+                setRequests(Array.isArray(requestsRes.data) ? requestsRes.data : []);
             } catch (err) {
                 console.error("Failed to fetch admin data", err);
             } finally {
@@ -161,7 +161,7 @@ export const AdminDashboardPage = () => {
                                                 <div className="flex gap-4">
                                                     <Avatar>
                                                         <AvatarImage src={req.user.avatar || ""} />
-                                                        <AvatarFallback>{req.user.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                                        <AvatarFallback>{(req.user.username || "U").substring(0, 2).toUpperCase()}</AvatarFallback>
                                                     </Avatar>
                                                     <div>
                                                         <p className="font-bold">{req.user.username}</p>

@@ -104,7 +104,7 @@ export const PropertyPost = ({ post }: { post: PropertyPostProps }) => {
             <CardHeader className="p-4 flex flex-row items-center space-x-4">
                 <Avatar>
                     <AvatarImage src={post.user?.avatar} />
-                    <AvatarFallback>{post.user?.username?.substring(0, 2).toUpperCase() || "??"}</AvatarFallback>
+                    <AvatarFallback>{(post.user?.username || "U").substring(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                     <p className="text-sm font-semibold">{post.user?.username || "Unknown Developer"}</p>
