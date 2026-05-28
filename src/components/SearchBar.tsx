@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
+import type { SearchParams } from "../pages/FeedPage";
 
 interface SearchBarProps {
-    onSearch: (searchParams: any) => void;
+    onSearch: (searchParams: SearchParams) => void;
 }
 
 export const SearchBar = ({ onSearch }: SearchBarProps) => {
-    const [query, setQuery] = useState({
+    const [query, setQuery] = useState<SearchParams>({
         city: "",
         type: "",
+        property: "",
         minPrice: "",
         maxPrice: "",
         bedroom: "",
@@ -29,29 +31,74 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
                 onSubmit={handleSubmit}
                 className='flex items-center gap-2 w-full max-w-4xl mx-auto'
             >
-                {/* City Input - Flex-1 to take available space */}
                 <div className='flex-1 relative'>
                     <input
                         type='text'
                         name='city'
                         placeholder='City...'
+                        value={query.city}
                         className='w-full h-10 pl-3 pr-2 bg-background border border-primary/20 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary/50 text-sm'
                         onChange={handleChange}
                     />
                 </div>
 
-                {/* Type Dropdown - Compact */}
                 <select
                     name="type"
+                    value={query.type}
                     className='h-10 px-2 bg-background border border-primary/20 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary/50 cursor-pointer text-sm w-[80px] md:w-auto'
                     onChange={handleChange}
                 >
                     <option value="">All</option>
-                    <option value="buy">Buy</option>
+                    <option value="sale">Buy</option>
                     <option value="rent">Rent</option>
                 </select>
 
-                {/* Search Button - Icon Only */}
+                <select
+                    name="property"
+                    value={query.property}
+                    className='hidden md:block h-10 px-2 bg-background border border-primary/20 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary/50 cursor-pointer text-sm'
+                    onChange={handleChange}
+                >
+                    <option value="">Any property</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="house">House</option>
+                    <option value="condo">Condo</option>
+                    <option value="villa">Villa</option>
+                    <option value="duplex">Duplex</option>
+                    <option value="townhouse">Townhouse</option>
+                    <option value="land">Land</option>
+                </select>
+
+                <input
+                    type="number"
+                    name="minPrice"
+                    min="0"
+                    placeholder="Min"
+                    value={query.minPrice}
+                    className='hidden lg:block h-10 w-24 px-2 bg-background border border-primary/20 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary/50 text-sm'
+                    onChange={handleChange}
+                />
+
+                <input
+                    type="number"
+                    name="maxPrice"
+                    min="0"
+                    placeholder="Max"
+                    value={query.maxPrice}
+                    className='hidden lg:block h-10 w-24 px-2 bg-background border border-primary/20 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary/50 text-sm'
+                    onChange={handleChange}
+                />
+
+                <input
+                    type="number"
+                    name="bedroom"
+                    min="1"
+                    placeholder="Beds"
+                    value={query.bedroom}
+                    className='hidden lg:block h-10 w-20 px-2 bg-background border border-primary/20 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary/50 text-sm'
+                    onChange={handleChange}
+                />
+
                 <button
                     type='submit'
                     className='h-10 w-10 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors shadow-sm flex items-center justify-center flex-shrink-0'

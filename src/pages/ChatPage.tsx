@@ -62,6 +62,13 @@ export const ChatPage = () => {
                     setMessages(response.data);
                     // Mark chat as seen
                     await api.put(`/chats/${selectedChat.id}`);
+                    setChats((prev) =>
+                        prev.map((c) =>
+                            c.id === selectedChat.id
+                                ? { ...c, seenBy: Array.from(new Set([...(c.seenBy || []), user?.id || ""])) }
+                                : c
+                        )
+                    );
                 } catch (err) {
                     console.error("Failed to fetch messages:", err);
                 } finally {
@@ -70,7 +77,7 @@ export const ChatPage = () => {
             };
             fetchMessages();
         }
-    }, [selectedChat]);
+    }, [selectedChat, user?.id]);
 
     useEffect(() => {
         const handleMessage = (data: Message) => {
@@ -81,7 +88,13 @@ export const ChatPage = () => {
             setChats((prev) =>
                 prev.map((c) =>
                     c.id === data.chatId
-                        ? { ...c, lastMessage: data.text, seenBy: [data.userId] }
+                        ? {
+                            ...c,
+                            lastMessage: data.text,
+                            seenBy: selectedChat?.id === data.chatId
+                                ? Array.from(new Set([data.userId, user?.id || ""]))
+                                : [data.userId],
+                        }
                         : c
                 )
             );
@@ -94,7 +107,7 @@ export const ChatPage = () => {
         return () => {
             socket?.off("getMessage", handleMessage);
         };
-    }, [socket, selectedChat]);
+    }, [socket, selectedChat, user?.id]);
 
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: "smooth" });

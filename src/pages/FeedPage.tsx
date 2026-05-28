@@ -10,11 +10,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Button } from "../components/ui/button";
 import { Home, Bookmark, History, PlusCircle, TrendingUp } from "lucide-react";
 
+export type SearchParams = {
+    city: string;
+    type: string;
+    property: string;
+    minPrice: string;
+    maxPrice: string;
+    bedroom: string;
+};
+
 export const FeedPage = () => {
     const [posts, setPosts] = useState<PropertyPostProps[]>([]);
-    const [searchParams, setSearchParams] = useState({
+    const [searchParams, setSearchParams] = useState<SearchParams>({
         city: "",
         type: "",
+        property: "",
         minPrice: "",
         maxPrice: "",
         bedroom: "",
@@ -26,8 +36,10 @@ export const FeedPage = () => {
         const fetchPosts = async () => {
             setLoading(true);
             try {
-                const query = new URLSearchParams(searchParams).toString();
-                const response = await api.get(`/posts?${query}`);
+                const query = new URLSearchParams(
+                    Object.entries(searchParams).filter(([, value]) => value.trim() !== "")
+                ).toString();
+                const response = await api.get(query ? `/posts?${query}` : "/posts");
                 // Ensure the data is an array
                 const data = Array.isArray(response.data) ? response.data :
                     (response.data && Array.isArray(response.data.posts) ? response.data.posts : []);
@@ -41,7 +53,7 @@ export const FeedPage = () => {
         fetchPosts();
     }, [searchParams]);
 
-    const handleSearch = (params: any) => {
+    const handleSearch = (params: SearchParams) => {
         setSearchParams(params);
     };
 

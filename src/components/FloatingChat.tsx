@@ -103,7 +103,7 @@ export const FloatingChat = () => {
             };
             fetchMessages();
         }
-    }, [selectedChat]);
+    }, [selectedChat, user?.id]);
 
     // Socket listeners
     useEffect(() => {
@@ -114,7 +114,13 @@ export const FloatingChat = () => {
             setChats((prev) =>
                 prev.map((c) =>
                     c.id === data.chatId
-                        ? { ...c, lastMessage: data.text, seenBy: [data.userId] }
+                        ? {
+                            ...c,
+                            lastMessage: data.text,
+                            seenBy: selectedChat?.id === data.chatId
+                                ? Array.from(new Set([data.userId, user?.id || ""]))
+                                : [data.userId],
+                        }
                         : c
                 )
             );
