@@ -4,10 +4,23 @@ import App from "./App.tsx";
 import { ThemeProvider } from "@/components/theme-provider.tsx";
 import "./index.css";
 
+import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext.tsx";
+import { SocketProvider } from "./context/SocketContext";
+import { ChatProvider } from "./context/ChatContext";
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ThemeProvider>
-      <App />
-    </ThemeProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <SocketProvider>
+          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+            <ChatProvider>
+              <App />
+            </ChatProvider>
+          </ThemeProvider>
+        </SocketProvider>
+      </AuthProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );

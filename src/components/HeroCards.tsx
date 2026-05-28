@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -11,7 +12,6 @@ import {
 } from "@/components/ui/card";
 import { Check, Linkedin } from "lucide-react";
 import { LightBulbIcon } from "./Icons";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
 
 export const HeroCards = () => {
   return (
@@ -35,7 +35,7 @@ export const HeroCards = () => {
 
         <CardContent>Exclusive 2-bedroom suite with floor-to-ceiling windows.</CardContent>
         <CardFooter className="flex justify-between items-center">
-          <span className="font-bold text-primary">$1,250,000</span>
+          <span className="font-bold text-primary">750,000,000 FCFA</span>
           <Badge variant="secondary">Featured</Badge>
         </CardFooter>
       </Card>
@@ -48,7 +48,7 @@ export const HeroCards = () => {
             alt="Agent avatar"
             className="absolute grayscale-[0%] -top-12 rounded-full w-24 h-24 aspect-square object-cover"
           />
-          <CardTitle className="text-center">Marcus Sterling</CardTitle>
+          <CardTitle className="text-center">MukumWinston</CardTitle>
           <CardDescription className="font-normal text-primary">
             Senior Real Estate Advisor
           </CardDescription>
@@ -73,7 +73,15 @@ export const HeroCards = () => {
             >
               <Linkedin size="20" />
             </a>
-            <Button size="sm">Contact Marcus</Button>
+            <Button asChild size="sm">
+              <a
+                rel="noreferrer noopener"
+                target="_blank"
+                href="https://wa.me/673837762"
+              >
+                Chat on WhatsApp
+              </a>
+            </Button>
           </div>
         </CardFooter>
       </Card>
@@ -91,7 +99,7 @@ export const HeroCards = () => {
             </Badge>
           </CardTitle>
           <div className="flex flex-col">
-            <span className="text-3xl font-bold">$4,500,000</span>
+            <span className="text-3xl font-bold">2,700,000,000 FCFA</span>
             <span className="text-muted-foreground text-sm">Oceanview Estates</span>
           </div>
 
@@ -101,7 +109,9 @@ export const HeroCards = () => {
         </CardHeader>
 
         <CardContent>
-          <Button className="w-full">View Details</Button>
+          <Button asChild className="w-full">
+            <Link to="/feed">View Details</Link>
+          </Button>
         </CardContent>
 
         <hr className="w-4/5 m-auto mb-4" />

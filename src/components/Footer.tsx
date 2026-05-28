@@ -1,4 +1,5 @@
-import { LogoIcon } from "./Icons";
+import logo from "../assets/Copilot_20260210_193854.png";
+import { ScrollReveal } from "./ScrollReveal";
 
 export const Footer = () => {
   return (
@@ -7,14 +8,15 @@ export const Footer = () => {
 
       <section className="container py-20 grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-x-12 gap-y-8">
         <div className="col-span-full xl:col-span-2">
-          <a
-            rel="noreferrer noopener"
-            href="/"
-            className="font-bold text-xl flex"
-          >
-            <LogoIcon />
-            Elite Estates
-          </a>
+          <ScrollReveal direction="right">
+            <a
+              rel="noreferrer noopener"
+              href="/"
+              className="font-bold text-xl flex items-center gap-2"
+            >
+              <img src={logo} alt="IRED Logo" className="h-40 w-50" />
+            </a>
+          </ScrollReveal>
         </div>
 
         <div className="flex flex-col gap-2">
@@ -152,7 +154,8 @@ export const Footer = () => {
 
       <section className="container pb-14 text-center">
         <h3>
-          &copy; 2026 Elite Estates. All rights reserved.
+          &copy; 2026 IRED (Iforty Real Estate Development). All rights
+          reserved.
         </h3>
       </section>
     </footer>

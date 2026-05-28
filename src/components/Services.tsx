@@ -1,6 +1,8 @@
+import { Link } from "react-router-dom";
+import { Button } from "./ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { MagnifierIcon, WalletIcon, ChartIcon } from "./Icons";
-import cubeLeg from "../assets/cube-leg.png";
+import { ScrollReveal } from "./ScrollReveal";
 
 interface ServiceProps {
   title: string;
@@ -31,45 +33,60 @@ const serviceList: ServiceProps[] = [
 
 export const Services = () => {
   return (
-    <section className="container py-24 sm:py-32">
-      <div className="grid lg:grid-cols-[1fr,1fr] gap-8 place-items-center">
-        <div>
-          <h2 className="text-3xl md:text-4xl font-bold">
-            <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
-              Our Premium{" "}
-            </span>
-            Real Estate Services
-          </h2>
+    <section className="relative py-24 sm:py-32 overflow-hidden">
+      {/* Sticky Background Image */}
+      <div
+        className="absolute inset-0 z-0 bg-fixed bg-cover bg-center"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1717167398817-121e3c283dbb?w=2070&auto=format&fit=crop&q=80')`,
+          opacity: 0.1
+        }}
+      />
 
-          <p className="text-muted-foreground text-xl mt-4 mb-8 ">
-            From luxury sales to comprehensive property management, we provide
-            everything you need for a successful real estate journey.
-          </p>
+      <div className="container relative z-10 flex flex-col items-center gap-12 text-center">
+        <div className="max-w-3xl">
+          <ScrollReveal direction="up">
+            <h2 className="text-3xl md:text-5xl font-bold">
+              <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
+                Our Premium{" "}
+              </span>
+              Real Estate Services
+            </h2>
+          </ScrollReveal>
 
-          <div className="flex flex-col gap-8">
-            {serviceList.map(({ icon, title, description }: ServiceProps) => (
-              <Card key={title}>
-                <CardHeader className="space-y-1 flex md:flex-row justify-start items-start gap-4">
-                  <div className="mt-1 bg-primary/20 p-1 rounded-2xl">
-                    {icon}
-                  </div>
-                  <div>
-                    <CardTitle>{title}</CardTitle>
-                    <CardDescription className="text-md mt-2">
-                      {description}
-                    </CardDescription>
-                  </div>
-                </CardHeader>
-              </Card>
+          <ScrollReveal direction="up" delay={0.2}>
+            <p className="text-muted-foreground text-xl mt-4 mb-12">
+              From luxury sales to comprehensive property management, we provide
+              everything you need for a successful real estate journey in Cameroon.
+            </p>
+          </ScrollReveal>
+
+          <div className="grid md:grid-cols-3 gap-8 text-start">
+            {serviceList.map(({ icon, title, description }: ServiceProps, index) => (
+              <ScrollReveal key={title} direction="up" delay={0.1 * (index + 3)}>
+                <Card className="h-full bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+                  <CardHeader className="space-y-4">
+                    <div className="bg-primary/20 w-fit p-3 rounded-2xl shadow-inner">
+                      {icon}
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl">{title}</CardTitle>
+                      <CardDescription className="text-md mt-2 leading-relaxed">
+                        {description}
+                      </CardDescription>
+                    </div>
+                  </CardHeader>
+                </Card>
+              </ScrollReveal>
             ))}
           </div>
-        </div>
 
-        <img
-          src={cubeLeg}
-          className="w-[300px] md:w-[500px] lg:w-[600px] object-contain"
-          alt="About services"
-        />
+          <ScrollReveal direction="up" delay={0.6} className="mt-16">
+            <Button asChild size="lg" className="px-12 bg-primary text-white shadow-xl hover:scale-105 transition-transform">
+              <Link to="/services">Explore All Our Services</Link>
+            </Button>
+          </ScrollReveal>
+        </div>
       </div>
     </section>
   );

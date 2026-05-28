@@ -1,39 +1,81 @@
-import { About } from "./components/About";
-import { Cta } from "./components/Cta";
-import { FAQ } from "./components/FAQ";
-import { Features } from "./components/Features";
-import { Footer } from "./components/Footer";
-import { Hero } from "./components/Hero";
-import { HowItWorks } from "./components/HowItWorks";
-import { Navbar } from "./components/Navbar";
-import { Newsletter } from "./components/Newsletter";
-import { Pricing } from "./components/Pricing";
-import { ScrollToTop } from "./components/ScrollToTop";
-import { Services } from "./components/Services";
-import { Sponsors } from "./components/Sponsors";
-import { Team } from "./components/Team";
-import { Testimonials } from "./components/Testimonials";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { LandingPage } from "./pages/LandingPage";
+import { LoginPage } from "./pages/LoginPage";
+import { RegisterPage } from "./pages/RegisterPage";
+import { VerifyEmailPage } from "./pages/VerifyEmailPage";
+import { FeedPage } from "./pages/FeedPage";
+import { PropertyDetailsPage } from "./pages/PropertyDetailsPage";
+import { ProfilePage } from "./pages/ProfilePage";
+import { ChatPage } from "./pages/ChatPage";
+import { CreateListingPage } from "./pages/CreateListingPage";
+import { SettingsPage } from "./pages/SettingsPage";
+import { ComingSoon } from "./pages/ComingSoon";
+import { ServicesPage } from "./pages/ServicesPage";
+import { FaqPage } from "./pages/FaqPage";
+import { RequestApprovalPage } from "./pages/RequestApprovalPage";
+import { AdminDashboardPage } from "./pages/AdminDashboardPage";
+import { useAuth } from "./context/AuthContext";
+import { ProtectedRoute } from "./routes/ProtectedRoute";
 import "./App.css";
 
 function App() {
+  const { user } = useAuth();
+
   return (
-    <>
-      <Navbar />
-      <Hero />
-      <Sponsors />
-      <About />
-      <HowItWorks />
-      <Features />
-      <Services />
-      <Cta />
-      <Testimonials />
-      <Team />
-      <Pricing />
-      <Newsletter />
-      <FAQ />
-      <Footer />
-      <ScrollToTop />
-    </>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={user ? <Navigate to="/feed" /> : <LoginPage />} />
+      <Route path="/register" element={user ? <Navigate to="/feed" /> : <RegisterPage />} />
+      <Route path="/verify-email" element={user ? <Navigate to="/feed" /> : <VerifyEmailPage />} />
+
+      <Route path="/feed" element={<FeedPage />} />
+
+      <Route path="/property/:id" element={<PropertyDetailsPage />} />
+
+      <Route path="/profile" element={
+        <ProtectedRoute>
+          <ProfilePage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/chat" element={
+        <ProtectedRoute>
+          <ChatPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/create-listing" element={
+        <ProtectedRoute>
+          <CreateListingPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/hotels" element={<ComingSoon title="Hotels" />} />
+      <Route path="/guest-houses" element={<ComingSoon title="Guest Houses" />} />
+      <Route path="/services" element={<ServicesPage />} />
+      <Route path="/faq" element={<FaqPage />} />
+
+      <Route path="/settings" element={
+        <ProtectedRoute>
+          <SettingsPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/request-approval" element={
+        <ProtectedRoute>
+          <RequestApprovalPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin-dashboard" element={
+        <ProtectedRoute>
+          <AdminDashboardPage />
+        </ProtectedRoute>
+      } />
+
+      {/* Catch-all */}
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   );
 }
 

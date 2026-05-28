@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -11,12 +13,19 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
-import { buttonVariants } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button, buttonVariants } from "./ui/button";
 import { Menu } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
-import { LogoIcon } from "./Icons";
+import logo from "../assets/Copilot_20260210_193854.png";
 
 interface RouteProps {
   href: string;
@@ -25,38 +34,50 @@ interface RouteProps {
 
 const routeList: RouteProps[] = [
   {
-    href: "#features",
-    label: "Features",
+    href: "/feed",
+    label: "Feed",
   },
   {
-    href: "#testimonials",
-    label: "Testimonials",
+    href: "/hotels",
+    label: "Hotels",
   },
   {
-    href: "#pricing",
-    label: "Pricing",
+    href: "/guest-houses",
+    label: "Guest-Hs",
   },
   {
-    href: "#faq",
+    href: "/services",
+    label: "Services",
+  },
+  {
+    href: "/faq",
     label: "FAQ",
   },
 ];
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { user, logout } = useAuth();
+
   return (
     <header className="sticky border-b-[1px] top-0 z-40 w-full bg-white dark:border-b-slate-700 dark:bg-background">
       <NavigationMenu className="mx-auto">
         <NavigationMenuList className="container h-14 px-4 w-screen flex justify-between ">
           <NavigationMenuItem className="font-bold flex">
-            <a
-              rel="noreferrer noopener"
-              href="/"
-              className="ml-2 font-bold text-xl flex"
+            <Link
+              to="/"
+              className="ml-2 font-bold text-xl flex items-center gap-2"
             >
-              <LogoIcon />
-              Elite Estates
-            </a>
+              <img
+                src={logo}
+                alt="IRED Logo"
+                className="h-10 w-auto object-contain"
+                style={{ minWidth: "40px" }}
+              />
+              <span className="bg-gradient-to-r from-[#B8860B] to-[#F5C147] text-transparent bg-clip-text">
+                IRED
+              </span>
+            </Link>
           </NavigationMenuItem>
 
           {/* mobile */}
@@ -67,51 +88,82 @@ export const Navbar = () => {
               open={isOpen}
               onOpenChange={setIsOpen}
             >
-              <SheetTrigger className="px-2">
-                <Menu
-                  className="flex md:hidden h-5 w-5"
-                  onClick={() => setIsOpen(true)}
-                >
+              <SheetTrigger className="px-2" asChild>
+                <Button variant="ghost" size="icon" onClick={() => setIsOpen(true)}>
+                  <Menu className="h-5 w-5" />
                   <span className="sr-only">Menu Icon</span>
-                </Menu>
+                </Button>
               </SheetTrigger>
 
               <SheetContent side={"left"}>
                 <SheetHeader>
                   <SheetTitle className="font-bold text-xl">
-                    Elite Estates
+                    IRED
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col justify-center items-center gap-2 mt-4">
                   {routeList.map(({ href, label }: RouteProps) => (
-                    <a
-                      rel="noreferrer noopener"
+                    <Link
                       key={label}
-                      href={href}
+                      to={href}
                       onClick={() => setIsOpen(false)}
                       className={buttonVariants({ variant: "ghost" })}
                     >
                       {label}
-                    </a>
+                    </Link>
                   ))}
-                  <a
-                    rel="noreferrer noopener"
-                    href="/login"
-                    className={`w-[110px] border ${buttonVariants({
-                      variant: "secondary",
-                    })}`}
-                  >
-                    Login
-                  </a>
-                  <a
-                    rel="noreferrer noopener"
-                    href="/signup"
-                    className={`w-[110px] border ${buttonVariants({
-                      variant: "default",
-                    })}`}
-                  >
-                    Sign Up
-                  </a>
+
+                  {!user ? (
+                    <>
+                      <Link
+                        to="/login"
+                        onClick={() => setIsOpen(false)}
+                        className={`w-[110px] border ${buttonVariants({
+                          variant: "secondary",
+                        })}`}
+                      >
+                        Login
+                      </Link>
+                      <Link
+                        to="/register"
+                        onClick={() => setIsOpen(false)}
+                        className={`w-[110px] border ${buttonVariants({
+                          variant: "default",
+                        })}`}
+                      >
+                        Sign Up
+                      </Link>
+                    </>
+                  ) : (
+                    <Button
+                      onClick={() => {
+                        logout();
+                        setIsOpen(false);
+                      }}
+                      className="w-[110px]"
+                      variant="destructive"
+                    >
+                      Logout
+                    </Button>
+                  )}
+                  {user && (
+                    <>
+                      <Link
+                        to="/profile"
+                        onClick={() => setIsOpen(false)}
+                        className={buttonVariants({ variant: "ghost" })}
+                      >
+                        Profile
+                      </Link>
+                      <Link
+                        to="/settings"
+                        onClick={() => setIsOpen(false)}
+                        className={buttonVariants({ variant: "ghost" })}
+                      >
+                        Settings
+                      </Link>
+                    </>
+                  )}
                 </nav>
               </SheetContent>
             </Sheet>
@@ -120,34 +172,75 @@ export const Navbar = () => {
           {/* desktop */}
           <nav className="hidden md:flex gap-2">
             {routeList.map((route: RouteProps, i) => (
-              <a
-                rel="noreferrer noopener"
-                href={route.href}
+              <Link
+                to={route.href}
                 key={i}
                 className={`text-[17px] ${buttonVariants({
                   variant: "ghost",
                 })}`}
               >
                 {route.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
-          <div className="hidden md:flex gap-2">
-            <a
-              rel="noreferrer noopener"
-              href="/login"
-              className={`border ${buttonVariants({ variant: "secondary" })}`}
-            >
-              Login
-            </a>
-            <a
-              rel="noreferrer noopener"
-              href="/signup"
-              className={`border ${buttonVariants({ variant: "default" })}`}
-            >
-              Sign Up
-            </a>
+          <div className="hidden md:flex gap-2 items-center">
+            {!user ? (
+              <>
+                <Link
+                  to="/login"
+                  className={`border ${buttonVariants({ variant: "secondary" })}`}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className={`border ${buttonVariants({ variant: "default" })}`}
+                >
+                  Sign Up
+                </Link>
+              </>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user?.avatar || ""} alt={user?.username || "User"} />
+                      <AvatarFallback>{(user?.username || "U").substring(0, 2).toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user?.username || "User"}</p>
+                      <p className="text-xs leading-none text-muted-foreground">{user?.email || ""}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/feed">Feed</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile">Profile</Link>
+                  </DropdownMenuItem>
+                  {user && !user.isApproved && user.role === "USER" && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/request-approval" className="text-amber-600 font-medium">Request Approval</Link>
+                    </DropdownMenuItem>
+                  )}
+                  {(user.role === "ADMIN" || user.role === "SUPREME_ADMIN") && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin-dashboard" className="text-primary font-bold">Admin Dashboard</Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => logout()}>
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
 
             <ModeToggle />
           </div>

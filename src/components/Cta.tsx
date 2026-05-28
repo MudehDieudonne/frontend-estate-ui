@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 
 export const Cta = () => {
@@ -22,12 +23,11 @@ export const Cta = () => {
         </div>
 
         <div className="space-y-4 lg:col-start-2">
-          <Button className="w-full md:mr-4 md:w-auto">Explore Listings</Button>
-          <Button
-            variant="outline"
-            className="w-full md:w-auto"
-          >
-            List Your Property
+          <Button asChild className="w-full md:mr-4 md:w-auto">
+            <Link to="/feed">Explore Listings</Link>
+          </Button>
+          <Button asChild variant="outline" className="w-full md:w-auto">
+            <Link to="/create-listing">List Your Property</Link>
           </Button>
         </div>
       </div>

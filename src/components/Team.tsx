@@ -23,9 +23,9 @@ interface SociaNetworkslProps {
 
 const teamList: TeamProps[] = [
   {
-    imageUrl: "https://i.pravatar.cc/150?u=marcus",
-    name: "Marcus Sterling",
-    position: "Principal Broker",
+    imageUrl: "https://i.pravatar.cc/150?u=mukum",
+    name: "Mukum Winston",
+    position: "Senior Real Estate Advisor",
     socialNetworks: [
       {
         name: "Linkedin",

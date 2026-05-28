@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Link } from "react-router-dom";
 
 interface FAQProps {
   question: string;
@@ -78,13 +79,12 @@ export const FAQ = () => {
 
       <h3 className="font-medium mt-4">
         Still have questions?{" "}
-        <a
-          rel="noreferrer noopener"
-          href="#"
+        <Link
+          to="/services#contact-form"
           className="text-primary transition-all border-primary hover:border-b-2"
         >
           Contact us
-        </a>
+        </Link>
       </h3>
     </section>
   );

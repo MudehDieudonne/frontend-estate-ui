@@ -112,7 +112,7 @@ export const Pricing = () => {
                 ) : null}
               </CardTitle>
               <div>
-                <span className="text-3xl font-bold">${pricing.price}</span>
+                <span className="text-3xl font-bold">{pricing.price.toLocaleString()} FCFA</span>
                 <span className="text-muted-foreground"> /month</span>
               </div>
 
